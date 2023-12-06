@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import Cookies from 'universal-cookie';
 import {
   Box,
   Button,
@@ -28,15 +29,23 @@ import {
 } from '@chakra-ui/react';
 
 export default function NewListing({ props, isOpen, onOpen, onClose }) {
-  const [name, setName] = useState();
-  const [price, setPrice] = useState();
-  const [description, setDescription] = useState();
+
+  //form files
+  const [username, setUsername] = useState('');
+  const [description, setDescription] = useState('');
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [image, setImage] = useState();
+  const [theme, setTheme] = useState('');
+
+  //deprecated
   const [type, setType] = useState('sublet');
   const [quantity, setQuantity] = useState();
   const [unitType, setUnitType] = useState();
   const [residence, setResidence] = useState();
   const [housingInfo, setHousingInfo] = useState([]);
-  const [file, setFile] = useState();
+  const [schools, setSchools] = useState([]);
+  // const [file, setFile] = useState();
   const toast = useToast();
 
   useEffect(() => {
@@ -62,7 +71,17 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
       }
     };
     getHousingInfo();
+    getSchoolsList()
   }, []);
+
+  async function getSchoolsList() {
+    try {
+      const response = await axios.get('http://localhost:1234/schools');
+      setSchools(response.data); // Assuming response.data is an array of objects with a 'name' property for each school
+    } catch (error) {
+      console.log('Error fetching schools:', error);
+    }
+  }
 
   useEffect(() => {
     if (props.listing) {
@@ -76,6 +95,44 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
     }
   }, [props.listing]);
 
+
+  const AddListingSubmit = (e) => {
+    e.preventDefault();
+
+    const cookies = new Cookies();
+    const localUser = cookies.get('USERNAME');
+    console.log("🚀 ~ file: NewListing.js:103 ~ AddListingSubmit ~ localUser:", localUser)
+
+    const formData = {
+      username: localUser,
+      description,
+      name,
+      price,
+      image,
+      theme,
+    };
+    console.log("🚀 ~ file: NewListing.js:114 ~ AddListingSubmit ~ formData:", formData)
+
+    // POST request using Axios with the form data
+    axios
+      .post('http://localhost:1234/addNewListing', formData)
+      .then((response) => {
+        if (response.status === 200) {
+          // Success: Handle the successful response
+          alert('Listing added successfully!');
+        } else {
+          // Handle other status codes if needed
+          alert('Failed to add listing. Please try again.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error sending form data:', error);
+        // Handle error or show an error message
+        alert('An error occurred while adding the listing.');
+      });
+  };
+
+
   const submit = async (e) => {
     e.preventDefault();
 
@@ -88,6 +145,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
     formData.append('unitType', unitType);
     formData.append('residence', residence);
     formData.append('image', file);
+
 
     if (props.listing) {
       console.log(formData);
@@ -158,28 +216,9 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
             onChange={(e) => setResidence(e.target.value)}
             variant="filled"
           >
-            {housingInfo.map((housing) => {
-              return <option key={housing.id}>{housing.res_name}</option>;
+            {schools.map((school) => {
+              return <option key={school.school_name}>{school.school_name}</option>;
             })}
-          </Select>
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormLabel>Unit Type:</FormLabel>
-          <Select
-            placeholder="Select Unit Type"
-            value={unitType}
-            onChange={(e) => {
-              setUnitType(e.target.value);
-            }}
-            variant="filled"
-          >
-            {housingInfo
-              .find((housing) => housing.res_name === residence)
-              ?.types_list.split(',')
-              .map((unit, index) => (
-                <option key={index}>{unit}</option>
-              ))}
           </Select>
         </FormControl>
       </Box>
@@ -198,80 +237,70 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
         <ModalHeader>Create Listing</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Box>
-            <VStack spacing="5">
-              <FormControl isRequired>
-                <FormLabel>Select Listing Type</FormLabel>
-                <Select
-                  onChange={(e) => setType(e.target.value)}
-                  value={type}
-                  variant="filled"
-                >
-                  <option value="sublet">Sublet</option>
-                  <option value="item">Item</option>
-                </Select>
-              </FormControl>
+          <Box p="4">
 
-              <FormControl isRequired>
-                <FormLabel>Listing Name</FormLabel>
-                <Input
-                  type="text"
-                  name="username"
-                  value={name}
-                  placeholder="eg. Studio Sublet at Marine Drive"
-                  onChange={(e) => setName(e.target.value)}
-                  variant="filled"
-                />
-              </FormControl>
+            {/* <FormControl>
+              <FormLabel>Username</FormLabel>
+              <Input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </FormControl> */}
 
-              <FormControl isRequired>
-                <FormLabel>Listing Price</FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    color="gray.300"
-                    fontSize="1.2em"
-                    children="$"
-                  />
-                  <Input
-                    type="number"
-                    min="0"
-                    variant="filled"
-                    value={price}
-                    placeholder="Enter listing price"
-                    onChange={(e) => setPrice(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                  />
-                </InputGroup>
-              </FormControl>
+            <FormControl mt="4">
+              <FormLabel>Description</FormLabel>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </FormControl>
 
-              <FormControl isRequired>
-                <FormLabel>Listing Details</FormLabel>
-                <Textarea
-                  type="text"
-                  variant="filled"
-                  placeholder="Write a detailed description of your listing..."
-                  size="md"
-                  resize="vertical"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </FormControl>
+            <FormControl mt="4">
+              <FormLabel>Name</FormLabel>
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </FormControl>
 
-              {inputSection}
+            <FormControl mt="4">
+              <FormLabel>Price</FormLabel>
+              <NumberInput value={price} onChange={(value) => setPrice(value)}>
+                <NumberInputField />
+              </NumberInput>
+            </FormControl>
 
-              <FormControl isRequired>
-                <FormLabel htmlFor="imageInput">Upload Image</FormLabel>
-                <Input
-                  pt="1px"
-                  pl="1px"
-                  type="file"
-                  id="imageInput"
-                  onChange={(e) => setFile(e.target.files[0])}
-                  style={{ border: 'none' }}
-                />
-              </FormControl>
-            </VStack>
+            <FormControl isRequired>
+              <FormLabel htmlFor="imageInput">Upload Image</FormLabel>
+              <Input
+                pt="1px"
+                pl="1px"
+                type="file"
+                id="imageInput"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onloadend = () => {
+                      setImage(reader.result);
+                    };
+                  }
+                }}
+                style={{ border: 'none' }}
+              />
+            </FormControl>
+
+            <FormControl mt="4">
+              <FormLabel>Theme</FormLabel>
+              <Input
+                type="text"
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
+              />
+            </FormControl>
           </Box>
         </ModalBody>
 
@@ -287,20 +316,9 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
           </Button>
           <Button
             colorScheme="blue"
-            onClick={(e) => {
-              submit(e);
-              toast({
-                title: props.listing ? 'Listing Updated!' : 'Listing Added!',
-                description: props.listing
-                  ? `${name} has been updated!`
-                  : `${name} has been added!`,
-                status: 'success',
-                duration: 5000,
-                isClosable: true,
-              });
-            }}
+            onClick={AddListingSubmit}
           >
-            {props.listing ? 'Update Listing' : 'Add Listing'}
+            Ajouter listing
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -347,7 +347,7 @@ export default function SingleListing() {
                 );
               })}
             </Box>
-          
+
             <Flex justifyContent="center" alignItems="center" mt="auto" pb={4} >
               <InputGroup>
 

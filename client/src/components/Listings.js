@@ -43,11 +43,10 @@ const Listings = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:1234/listings`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(`http://localhost:1234/getAllListings`)
       .then((res) => {
         setListings(res.data);
+        console.log("🚀 ~ file: Listings.js:49 ~ .then ~ res.data:", res.data)
         setFilteredListings(res.data);
         getSchoolsList();
       })
@@ -89,35 +88,28 @@ const Listings = () => {
 
   async function getSchoolsList() {
     try {
-      await axios.get('http://localhost:1234/schools/').then((res) => {
-        const modifiedData = res.data.map((school) => ({
-          ...school,
-          id: uuidv4(),
-        }));
-        console.log(modifiedData);
-        // Update the state with the modified data
-        setAvailableSchools(modifiedData);
+      axios.get('http://localhost:1234/getAllThemes/').then((res) => {
+        setAvailableSchools(res.data);
+
       });
-      console.log(availableSchools);
+
     } catch (e) {
       console.log(e);
     }
   }
 
   const handleDropDown = async (e) => {
-    setSelectedSchool(e.target.value);
-    await axios
-      .get(`http://localhost:1234/listings?school=${e.target.value}`, {
-        headers: { Authorization: `Bearer ${token}` },
+    // setSelectedSchool(e.target.value);
+
+    if (e.target.value == "") {
+      setFilteredListings(listings)
+    }
+    else {
+      let newList = listings.listings.filter((objet) => {
+        return (objet.theme == e.target.value)
       })
-      .then((res) => {
-        setListings(res.data);
-        console.log(res.data);
-        setFilteredListings(res.data);
-      })
-      .catch((e) => {
-        console.log('Error fetching listings data');
-      });
+      setFilteredListings({ listings: newList })
+    }
   };
 
   return (
@@ -215,13 +207,13 @@ const Listings = () => {
           onChange={handleDropDown}
           variant="filled"
         >
-          {availableSchools.map((school) => {
-            return <option key={school.id}>{school.school_name}</option>;
+          {availableSchools.schools && availableSchools.schools.map((school) => {
+            return <option key={school.school_name} >{school.school_name}</option>;
           })}
         </Select>
       </InputGroup>
       <SimpleGrid p="20px" spacing="10" minChildWidth="300px">
-        {filteredListings.map((listing) => {
+        {filteredListings.listings && filteredListings.listings.map((listing) => {
           return (
             <Listing
               key={listing.lid}
@@ -230,6 +222,7 @@ const Listings = () => {
               type={listing.type}
               price={listing.price}
               image={listing.image}
+              theme={listing.theme}
             />
           );
         })}
@@ -265,8 +258,11 @@ const Listings = () => {
   );
 };
 
-const Listing = ({ lid, name, price, image, type }) => {
+const Listing = ({ lid, name, price, image, type, theme }) => {
   const navigate = useNavigate();
+  const base64String = btoa(String.fromCharCode(...new Uint8Array(image)));
+  image = `data:image/jpeg;base64,${base64String}`;
+
 
   const handleClick = (e) => {
     navigate(e.currentTarget.id);
@@ -287,7 +283,7 @@ const Listing = ({ lid, name, price, image, type }) => {
       }}
     >
       <Image
-        src={`http://localhost:1234/images/listings/${image}`}
+        src={image}
         h="300px"
         w="full"
         objectFit="cover"
@@ -295,15 +291,11 @@ const Listing = ({ lid, name, price, image, type }) => {
 
       <Box p="6">
         <Box display="flex" alignItems="baseline">
-          {type === 'sublet' ? (
-            <Badge borderRadius="full" px="2" colorScheme="blue">
-              Sublet
-            </Badge>
-          ) : (
-            <Badge borderRadius="full" px="2" colorScheme="red">
-              Item
-            </Badge>
-          )}
+
+          <Badge borderRadius="full" px="2" colorScheme="red">
+            {theme}
+          </Badge>
+
         </Box>
 
         <Box
@@ -318,11 +310,6 @@ const Listing = ({ lid, name, price, image, type }) => {
 
         <Box>
           ${price}
-          {type === 'sublet' ? (
-            <Box as="span" color="gray.600" fontSize="sm">
-              /month
-            </Box>
-          ) : null}
         </Box>
       </Box>
     </Box>

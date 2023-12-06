@@ -9,6 +9,7 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 
 
+
 const usersRouter = require('./routes/users');
 const loginRouter = require('./routes/login');
 const registerRouter = require('./routes/register');
@@ -26,6 +27,9 @@ const adminRouter = require('./routes/admin');
 
 const app = express();
 app.use(cors());
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 const server = http.createServer(app);
 
@@ -295,3 +299,51 @@ app.post('/updateVerifiedStatus', (req, res) => {
     res.json({ message: 'Verified status updated successfully' });
   });
 });
+
+//get all listings endpoint ! 
+app.get('/getAllListings', (req, res) => {
+  const sql = "SELECT * FROM listings"; // Query updated to retrieve data from the listings table
+
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Error executing query' });
+      return;
+    }
+
+    res.json({ listings: results }); // Send the query results as JSON response with key 'listings'
+  });
+});
+
+app.get('/getAllThemes', (req, res) => {
+  const sql = "SELECT * FROM schools"; // Query updated to retrieve data from the schools table
+
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Error executing query' });
+      return;
+    }
+
+    res.json({ schools: results }); // Send the query results as JSON response with key 'schools'
+  });
+});
+
+// POST endpoint to handle form data and insert into the database
+app.post('/addNewListing', (req, res) => {
+  const { username, description, name, price, image, theme } = req.body;
+
+  // const decodedImage = Buffer.from(image, 'base64');
+
+  const sql = 'INSERT INTO listings (username, description, name, price, image, theme) VALUES (?, ?, ?, ?, ?, ?)';
+  const values = [username, description, name, price, image, theme];
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Error executing query' });
+      return;
+    }
+    res.status(200).json({ message: 'Form data inserted successfully' });
+  });
+});
+

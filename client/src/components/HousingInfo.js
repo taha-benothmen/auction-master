@@ -91,45 +91,7 @@ const HousingInfo = () => {
 
   return (
     <Flex flexDirection="column" maxW="75%" mx="auto">
-      <Heading>Housing Information</Heading>
-      {isVersatileResidences ? (
-        <Box p="1rem" size={'md'}>
-          <Text fontSize="xl" fontWeight="semibold">
-            Most Versatile Residences:
-          </Text>
-          <List spacing={3}>
-            {topResidences.map((residence, index) => (
-              <ListItem key={index}>
-                <ListIcon as={CheckIcon} color="green.500" />
-                {residence.res_name}
-              </ListItem>
-            ))}
-          </List>
-          <Button
-            mt="0.3rem"
-            size="sm"
-            colorScheme="red"
-            onClick={() => setIsVersatileResidences(false)}
-          >
-            Close
-          </Button>
-        </Box>
-      ) : (
-        <Box p="1rem" size="sm">
-          <Text fontSize="xl" fontWeight="semibold">
-            See the most versatile residences!
-          </Text>
-          <Button
-            mt="0.3rem"
-            size="sm"
-            colorScheme="blue"
-            onClick={() => setIsVersatileResidences(true)}
-          >
-            Hit me!
-          </Button>
-        </Box>
-      )}
-
+      
       <Stack spacing="10" p="20px">
         {residences.map((residence) => (
           <Residence

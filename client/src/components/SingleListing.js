@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import NewMessage from './NewMessage';
 import Cookies from 'universal-cookie';
 import { useNavigate } from 'react-router-dom';
+import { ImHammer2 } from "react-icons/im";
+import React from 'react';
 import NewListing from './NewListing';
 import {
   Box,
@@ -23,8 +25,17 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  useNumberInput,
+  HStack
 } from '@chakra-ui/react';
-import { DeleteIcon, ChatIcon, EmailIcon, EditIcon } from '@chakra-ui/icons';
+import {
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from '@chakra-ui/react'
+import { DeleteIcon, ChatIcon, EmailIcon, EditIcon, HamburgerIcon } from '@chakra-ui/icons';
 
 export default function SingleListing() {
   const cookies = new Cookies();
@@ -40,6 +51,20 @@ export default function SingleListing() {
   const deleteModal = useDisclosure();
   const lid = window.location.pathname.split('/')[2];
 
+  const [bidPrice, setBidPrice] = useState(0);
+
+  const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
+    useNumberInput({
+      step: 0.01,
+      defaultValue: 1.53,
+      min: 1,
+      max: 6,
+      precision: 2,
+    })
+
+  const inc = getIncrementButtonProps()
+  const dec = getDecrementButtonProps()
+  const input = getInputProps()
   useEffect(() => {
     getListing();
     getListingComments();
@@ -112,7 +137,7 @@ export default function SingleListing() {
     axios
       .post(
         `http://localhost:1234/comments/${lid}`,
-        { content: newComment },
+        { content: newComment + 'DT' },
         axiosConfig
       )
       .then((res) => {
@@ -138,6 +163,31 @@ export default function SingleListing() {
       .catch((e) => console.log(e));
     setNewComment('');
   };
+
+
+  const submitBidPrice = (e) => {
+    e.preventDefault();
+
+    if (listing.price >= bidPrice) {
+      alert("Bid can't be less than the original number")
+      return;
+    };
+
+
+    const dataObject = {
+      listingId: listing.lid,
+      newPrice: bidPrice
+    }
+    axios
+      .post(
+        `http://localhost:1234/updateListingPrice/`, dataObject)
+      .then((res) => {
+        alert("Bid placed !")
+        history('/listings');
+      })
+      .catch((e) => console.log(e));
+  };
+
 
   const deleteComment = async (commentId) => {
     try {
@@ -218,20 +268,20 @@ export default function SingleListing() {
             <Box flex="1" overflowY={'auto'}>
               <Heading size="xl">{listing.name}</Heading>
               <Heading size="md" mb="2">
-                ${listing.price}
+                {listing.price}TND
               </Heading>
               {listing.username === username && (
                 <Flex alignItems="center">
                   {/* Edit Button */}
                   <Button variant="ghost" onClick={handleOpenEditModal}>
                     <EditIcon mr={2} />
-                    Edit Listing
+                    Modifier
                   </Button>
 
                   {/* Delete Button */}
                   <Button variant="ghost" onClick={deleteModal.onOpen}>
                     <DeleteIcon mr={2} />
-                    Delete Listing
+                    Supprimer
                   </Button>
                 </Flex>
               )}
@@ -244,7 +294,7 @@ export default function SingleListing() {
                   color="gray.400"
                   cursor="pointer"
                   transition="color 0.2s ease"
-                  _hover={{ color: 'cyan.500' }}
+                  _hover={{ color: '#F2B0AE' }}
                   onClick={handleOpenModal}
                 />
               </Text>
@@ -263,18 +313,11 @@ export default function SingleListing() {
                   </Text>{' '}
                   {listing.unit}
                 </Text>
-              ) : (
-                <Text as="span" display="block" mb={2}>
-                  <Text as="span" fontWeight="bold">
-                    Quantity:
-                  </Text>{' '}
-                  {listing.quantity}
-                </Text>
-              )}
+              ) : null}
 
               <Text mb={2}>{listing.description}</Text>
 
-              <Heading size="md">Comments</Heading>
+              <Heading size="md">ENCHÈRE</Heading>
               {comments.map((comment) => {
                 return (
                   <Flex key={comment.id} alignItems="center" mb={3}>
@@ -296,7 +339,7 @@ export default function SingleListing() {
                           transition="color 0.2s ease"
                           _hover={{ color: 'red.500' }}
                         >
-                          Delete Comment
+                          Supprimer
                         </DeleteIcon>
                       </>
                     )}
@@ -304,26 +347,37 @@ export default function SingleListing() {
                 );
               })}
             </Box>
-            <Flex justifyContent="center" alignItems="center" mt="auto" pb={4}>
+          
+            <Flex justifyContent="center" alignItems="center" mt="auto" pb={4} >
               <InputGroup>
+
                 <Input
-                  placeholder="Write your comment here..."
+                  placeholder="Lancer votre enchére"
+                  type="number"
                   value={newComment}
                   onChange={(e) => {
                     setNewComment(e.target.value);
                   }}
+                  borderColor='#F2B0AE'
+                  focusBorderColor='#F2B0AE'
                   pr="4rem"
+
+
                 />
+
                 <InputRightElement width="4rem">
-                  <ChatIcon
+                  <ImHammer2
                     color="gray.400"
                     cursor="pointer"
                     transition="color 0.2s ease"
-                    _hover={{ color: 'blue.500' }}
+                    _hover={{ color: '#F2B0AE' }}
                     onClick={submitComment}
+
                   />
                 </InputRightElement>
+
               </InputGroup>
+
             </Flex>
           </Flex>
         </Box>
@@ -357,8 +411,7 @@ export default function SingleListing() {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader textAlign="center">
-            Are you sure you want to delete this listing?
-          </ModalHeader>
+            Êtes-vous sûr de vouloir supprimer votre enchére ?          </ModalHeader>
           <ModalBody>
             {/* Add any additional content here, if needed */}
           </ModalBody>
@@ -371,10 +424,10 @@ export default function SingleListing() {
               mr={3}
               onClick={deleteModal.onClose}
             >
-              Cancel
+              Annuler
             </Button>
             <Button colorScheme="red" onClick={deleteListing}>
-              Delete Listing
+              Supprimer
             </Button>
           </ModalFooter>
         </ModalContent>

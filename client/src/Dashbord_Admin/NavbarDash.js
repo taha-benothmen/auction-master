@@ -5,7 +5,7 @@ import { ChatIcon, BellIcon } from '@chakra-ui/icons';
 import sopra from '../assets/sopra.png'
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import EditProfile from './ProfileEdit';
+import EditProfile from '../components/ProfileEdit';
 import profile_Image from '../assets/temp-avatar.jpg';
 import { Radio, RadioGroup } from '@chakra-ui/react'
 import axios from 'axios';
@@ -66,9 +66,8 @@ const Profile = () => {
   const cookies = new Cookies();
   const token = cookies.get('TOKEN');
   const username = cookies.get('USERNAME');
-  let IsAdmin = cookies.get('ISADMIN');
-  let IsRh = cookies.get('ISRH');
-
+  const IsAdmin = cookies.get('ISADMIN');
+  const IsRh = cookies.get('ISRH');
   const [rerender, setRerender] = useState(false);
 
   useEffect(() => {
@@ -91,7 +90,6 @@ const Profile = () => {
     };
 
     fetchData();
-
   }, []);
 
   const deleteAccount = async () => {
@@ -106,7 +104,7 @@ const Profile = () => {
           cookies.remove('USERNAME', { path: '/' });
           cookies.remove('ISADMIN', { path: '/' });
           cookies.remove('ISRH', { path: '/' });
-          history('/home', {});
+          history('/', {});
         })
         .catch((e) => {
           console.log(e);
@@ -119,13 +117,13 @@ const Profile = () => {
   const logout = () => {
     cookies.remove('TOKEN', { path: '/' });
     cookies.remove('USERNAME', { path: '/' });
-    cookies.remove('ISADMIN', { path: '/' });
-    cookies.remove('ISRH', { path: '/' });
-    history('/', {});
+    history('/home', {});
   };
 
   return (
-    <>
+    <
+
+      >
 
       <Flex
         bgColor={"white"}
@@ -145,20 +143,15 @@ const Profile = () => {
         {token && (
           <div>
             <HStack spacing="20px" pt="20px">
-              <Link to="/home">
-                <Button bg="white">ACCUEIL</Button>
-              </Link>
-              <Link to="/listings">
-                <Button bg="white">ENCHÈRE</Button>
-              </Link>
+            <Link to="/mangmentrh">
+              <Button bg="white">Gestion des responsables RH</Button>
+            </Link>
+         
+           
 
-              <Link to="/housinginfoP">
-                <Button bg="white">DASHBORD</Button>
-              </Link>
-
-              <Link to="/contact">
-                <Button bg="white">CONTACTS</Button>
-              </Link>
+            <Link to="/mangthem">
+              <Button bg="white">Gestion des thèmes</Button>
+            </Link>
 
 
             </HStack>
@@ -194,8 +187,7 @@ const Profile = () => {
 
                     <Popover>
                       <PopoverTrigger style={{ position: 'absolute', left: '-120%', top: '0' }}>
-                        <Button onClick={() => { setRerender(!rerender); }}
-                          colorScheme='white' color='black' fontWeight='normal'>Changer role</Button>
+                        <Button colorScheme='white' color='black' fontWeight='normal' onClick={() => { setRerender(!rerender); }}>Changer role</Button>
                       </PopoverTrigger>
                       <Portal>
                         <PopoverContent>
@@ -205,7 +197,7 @@ const Profile = () => {
                             <Link to="/homeadmin">
                               {(IsAdmin == 1) && <Button bg="white">Admin</Button>}
                             </Link>
-                            <Link to="/validateusers">
+                            <Link to="/home">
                               {(IsRh == 1) && <Button bg="white">RH</Button>}
                             </Link>
                             <Link to="/home">
@@ -263,7 +255,7 @@ const Profile = () => {
           </ModalHeader>
           <ModalCloseButton />
           <Flex gap="1rem" justifyContent="center">
-            <Button colorScheme="green" marginBottom="1rem" onClick={() => { logout();  logoutModal.onClose()}}>
+            <Button colorScheme="green" marginBottom="1rem" onClick={() => { logout();  logoutModal.onClose()}} >
               Oui
             </Button>
             <Button

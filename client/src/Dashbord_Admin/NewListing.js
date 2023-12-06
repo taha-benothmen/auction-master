@@ -123,68 +123,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
     }
   };
 
-  let inputSection;
-  if (type === 'item') {
-    inputSection = (
-      /* JSX for the input section when type is "Items" */
-      <Box w="full">
-        <FormControl isRequired>
-          <FormLabel>Item Quantity:</FormLabel>
-          <NumberInput
-            min="1"
-            variant="filled"
-            value={quantity}
-            onChange={(valueString) => setQuantity(valueString)}
-            onKeyDown={handleKeyDown}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </FormControl>
-      </Box>
-    );
-  } else if (type === 'sublet') {
-    inputSection = (
-      /* JSX for the input section when type is "Sublets" */
-      <Box w="full">
-        <FormControl isRequired>
-          <FormLabel>Residence:</FormLabel>
-          <Select
-            placeholder="Select Residence"
-            value={residence}
-            onChange={(e) => setResidence(e.target.value)}
-            variant="filled"
-          >
-            {housingInfo.map((housing) => {
-              return <option key={housing.id}>{housing.res_name}</option>;
-            })}
-          </Select>
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormLabel>Unit Type:</FormLabel>
-          <Select
-            placeholder="Select Unit Type"
-            value={unitType}
-            onChange={(e) => {
-              setUnitType(e.target.value);
-            }}
-            variant="filled"
-          >
-            {housingInfo
-              .find((housing) => housing.res_name === residence)
-              ?.types_list.split(',')
-              .map((unit, index) => (
-                <option key={index}>{unit}</option>
-              ))}
-          </Select>
-        </FormControl>
-      </Box>
-    );
-  }
+  
 
   return (
     <Modal
@@ -195,50 +134,37 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create Listing</ModalHeader>
+        <ModalHeader>Ajouter un nouveau responsable RH</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Box>
             <VStack spacing="5">
-              <FormControl isRequired>
-                <FormLabel>Select Listing Type</FormLabel>
-                <Select
-                  onChange={(e) => setType(e.target.value)}
-                  value={type}
-                  variant="filled"
-                >
-                  <option value="sublet">Sublet</option>
-                  <option value="item">Item</option>
-                </Select>
-              </FormControl>
+             
 
               <FormControl isRequired>
-                <FormLabel>Listing Name</FormLabel>
+                <FormLabel>Nom</FormLabel>
                 <Input
                   type="text"
                   name="username"
                   value={name}
-                  placeholder="eg. Studio Sublet at Marine Drive"
                   onChange={(e) => setName(e.target.value)}
                   variant="filled"
                 />
               </FormControl>
 
               <FormControl isRequired>
-                <FormLabel>Listing Price</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
                     color="gray.300"
                     fontSize="1.2em"
-                    children="$"
                   />
                   <Input
-                    type="number"
+                    type="text"
                     min="0"
                     variant="filled"
                     value={price}
-                    placeholder="Enter listing price"
                     onChange={(e) => setPrice(e.target.value)}
                     onKeyDown={handleKeyDown}
                   />
@@ -246,11 +172,10 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
               </FormControl>
 
               <FormControl isRequired>
-                <FormLabel>Listing Details</FormLabel>
+                <FormLabel>Description</FormLabel>
                 <Textarea
                   type="text"
                   variant="filled"
-                  placeholder="Write a detailed description of your listing..."
                   size="md"
                   resize="vertical"
                   value={description}
@@ -258,10 +183,9 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
                 />
               </FormControl>
 
-              {inputSection}
 
               <FormControl isRequired>
-                <FormLabel htmlFor="imageInput">Upload Image</FormLabel>
+                <FormLabel htmlFor="imageInput">Télécharger une photo de profile</FormLabel>
                 <Input
                   pt="1px"
                   pl="1px"
@@ -278,19 +202,19 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
         <ModalFooter display="flex" justifyContent="right">
           <Button
             variant="ghost"
-            colorScheme="blue"
+            color="red"
             mr={3}
             onClick={onClose}
-            border="2px solid rgb(49, 130, 206)"
+            border="#F2B0AE"
           >
-            Cancel
+            Annuler
           </Button>
           <Button
-            colorScheme="blue"
+            color="#F2B0AE"
             onClick={(e) => {
               submit(e);
               toast({
-                title: props.listing ? 'Listing Updated!' : 'Listing Added!',
+                title: props.listing ? 'Ajouter!' : 'Ajouter!',
                 description: props.listing
                   ? `${name} has been updated!`
                   : `${name} has been added!`,
@@ -300,7 +224,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
               });
             }}
           >
-            {props.listing ? 'Update Listing' : 'Add Listing'}
+            {props.listing ? 'Update Listing' : 'Ajouter'}
           </Button>
         </ModalFooter>
       </ModalContent>

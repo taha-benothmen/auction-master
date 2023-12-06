@@ -23,3 +23,20 @@ exports.getTopSchools = async (req, res) => {
     res.status(500).json({ message: e });
   }
 };
+
+exports.createSchools = async (req, res) => {
+  try {
+    const { schoolName } = req.body;
+    await schools_middleware.createSchool(schoolName).then((newSchool) => {
+      if (newSchool == undefined) {
+        res.status(401).json({ message: 'School not created at schools contoller', school: req });
+      } else {
+        res.status(201).json({ message: 'School created successfully', school: req });
+      }
+    });
+
+  } catch (e) {
+    res.status(500).json({ message: e });
+  }
+
+};

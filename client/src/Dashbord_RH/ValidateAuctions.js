@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { v4 as uuidv4 } from 'uuid';
-import NewListing from './NewListing';
+import NewListing from '../components/NewListing';
+import bgg from '../assets/bgg.png' 
+
 import { useNavigate } from 'react-router-dom';
 import {
   Icon,
@@ -33,9 +35,6 @@ const Listings = () => {
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [availableSchools, setAvailableSchools] = useState([]);
 
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -89,7 +88,7 @@ const Listings = () => {
 
   async function getSchoolsList() {
     try {
-      await axios.get('http://localhost:1234/schools/').then((res) => {
+      await axios.get('http://localhost:1234/schools').then((res) => {
         const modifiedData = res.data.map((school) => ({
           ...school,
           id: uuidv4(),
@@ -121,7 +120,9 @@ const Listings = () => {
   };
 
   return (
-    <Flex flexDirection="column">
+    <Flex flexDirection="column"  bg="#f8dddb">
+       
+   
       <Box
         mt="20px"
         borderRadius="20px"
@@ -131,7 +132,7 @@ const Listings = () => {
         transform="translateX(-50%)"
         w="50%"
         h="70px"
-        display="flex"
+        display="flex" 
         justifyContent="center"
         alignItems="center"
       >
@@ -210,7 +211,9 @@ const Listings = () => {
         </Flex>
       </Box>
       <InputGroup>
-        <Select
+        <Select 
+          w="60%" mr="10%"
+          left="20%"           
           placeholder="Select category"
           onChange={handleDropDown}
           variant="filled"
@@ -231,26 +234,13 @@ const Listings = () => {
               price={listing.price}
               image={listing.image}
             />
+            
           );
+          
         })}
       </SimpleGrid>
 
-      <Box position="fixed" right="40px" bottom="30px">
-        <Button
-          position="fixed"
-          right="40px"
-          bottom="30px"
-          colorScheme="blue"
-          p="30px"
-          borderRadius="30px"
-          onClick={handleOpenModal}
-        >
-          <Flex align="center">
-            <Icon as={AddIcon} boxSize={4} mr="2" />
-            Add Listing
-          </Flex>
-        </Button>
-      </Box>
+      
 
       <NewListing
         props={{
@@ -258,7 +248,7 @@ const Listings = () => {
           token,
         }}
         isOpen={isModalOpen}
-        onOpen={handleOpenModal}
+       
         onClose={handleCloseModal}
       />
     </Flex>
@@ -273,7 +263,9 @@ const Listing = ({ lid, name, price, image, type }) => {
   };
 
   return (
+    <flex color='white'>
     <Box
+      p='3'
       maxW="sm"
       borderWidth="1px"
       borderRadius="lg"
@@ -285,6 +277,7 @@ const Listing = ({ lid, name, price, image, type }) => {
       _hover={{
         boxShadow: 'lg',
       }}
+      bgColor={'gray.100'}
     >
       <Image
         src={`http://localhost:1234/images/listings/${image}`}
@@ -315,7 +308,7 @@ const Listing = ({ lid, name, price, image, type }) => {
         >
           {name}
         </Box>
-
+        
         <Box>
           ${price}
           {type === 'sublet' ? (
@@ -324,8 +317,16 @@ const Listing = ({ lid, name, price, image, type }) => {
             </Box>
           ) : null}
         </Box>
+        
       </Box>
+      <center>
+      <Button colorScheme="red" >
+              Delete
+            </Button>
+            
+            </center>
     </Box>
+    </flex>
   );
 };
 

@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import EditProfile from './ProfileEdit';
 import profile_Image from '../assets/temp-avatar.jpg';
 import axios from 'axios';
+import bgg from '../assets/bgg.png' 
+
 import {
   Box,
   Button,
@@ -82,11 +84,15 @@ const Profile = () => {
   };
 
   return (
-    <>
+    <
+  
+    >
+    
       <Grid
         marginInline={{ md: '5vw', xl: '10vw' }}
         templateColumns="1fr 3fr"
         gap={6}
+       
       >
         <GridItem w="100%" h="100%">
           <Image
@@ -96,7 +102,7 @@ const Profile = () => {
             borderRadius="full"
           />
           <Text marginBlock="0.5rem" textAlign="center">
-            {school}
+            
           </Text>
         </GridItem>
         <GridItem w="100%" h="100%" borderRadius="1rem">
@@ -117,10 +123,10 @@ const Profile = () => {
         <Button
           size="sm"
           variant="solid"
-          colorScheme="blue"
+          colorScheme="green"
           onClick={editModal.onOpen}
         >
-          Edit Details
+          Editer profile
         </Button>
         <Button
           size="sm"
@@ -128,7 +134,7 @@ const Profile = () => {
           colorScheme="red"
           onClick={logoutModal.onOpen}
         >
-          Logout
+          Se déconnecter
         </Button>
         <Button
           size="sm"
@@ -136,7 +142,7 @@ const Profile = () => {
           colorScheme="red"
           onClick={deleteModal.onOpen}
         >
-          Delete Account
+          Supprimer le compte
         </Button>
       </Flex>
       <Modal
@@ -171,19 +177,19 @@ const Profile = () => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader textAlign="center">
-            Are you sure you want to logout?
+          Êtes-vous sûr de vouloir vous déconnecter?
           </ModalHeader>
           <ModalCloseButton />
           <Flex gap="1rem" justifyContent="center">
-            <Button colorScheme="blue" marginBottom="1rem" onClick={logout}>
-              Yes
+            <Button colorScheme="green" marginBottom="1rem" onClick={logout}>
+              Oui
             </Button>
             <Button
               colorScheme="red"
               marginBottom="1rem"
               onClick={logoutModal.onClose}
             >
-              No
+              Non
             </Button>
           </Flex>
         </ModalContent>
@@ -198,23 +204,23 @@ const Profile = () => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader textAlign="center">
-            Are you sure you want to delete your account?
+          Êtes-vous sûr de vouloir supprimer votre compte ?
           </ModalHeader>
           <ModalCloseButton />
           <Flex gap="1rem" justifyContent="center">
             <Button
-              colorScheme="blue"
+              colorScheme="green"
               marginBottom="1rem"
               onClick={deleteAccount}
             >
-              Yes
+              Oui
             </Button>
             <Button
               colorScheme="red"
               marginBottom="1rem"
               onClick={deleteModal.onClose}
             >
-              No
+              Non
             </Button>
           </Flex>
         </ModalContent>

@@ -25,6 +25,30 @@ exports.verifyUser = async (username, password) => {
   }
 };
 
+exports.verifyAdmin = async (username, password) => {
+  try {
+    const userQuery =
+      'SELECT EXISTS (SELECT 1 FROM admin WHERE username = ?) AS userExists';
+    const [userRes] = await db.query(userQuery, [username]);
+    const userExists = userRes[0].userExists === 1;
+    console.log(userRes)
+
+    if (userExists) {
+      const passQuery = 'SELECT password FROM admin WHERE username = ?';
+      const [passRes] = await db.query(passQuery, [username]);
+      const truePassword = passRes[0].password.toString('utf8');
+console.log(truePassword)
+      if (password == truePassword) {
+        return true;
+      }
+    }
+    return false;
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return false;
+  }
+}
+
 exports.isAuthenticated = async (req, res, next) => {
   try {
     //   get the token from the authorization header

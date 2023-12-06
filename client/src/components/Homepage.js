@@ -2,7 +2,9 @@ import React from 'react';
 import { ReactNode } from 'react'
 import { BsPerson } from 'react-icons/bs'
 import { FiServer } from 'react-icons/fi'
+import { MdOutlineCategory } from "react-icons/md";
 import { GoLocation } from 'react-icons/go'
+import auction from '../assets/auction.jpg'
 import {
   chakra,
   Container,
@@ -154,31 +156,30 @@ const MissionAndOverviewSection = () => {
                   position: 'absolute',
                   bottom: 1,
                   left: 0,
-                  bg: 'blue.400',
+                  bg: '#F2B0AE',
                   zIndex: -1,
                 }}>
-                Freelance
+                EXPLOREZ
               </Text>
               <br />{' '}
-              <Text color={'blue.400'} as={'span'}>
-                Design Projects
+              <Text color={'#F2B0AE'} as={'span'} fontSize={40} >
+              ACHETEZ AUX ENCHÈRES
               </Text>{' '}
             </Heading>
             <Text fontSize={{ base: 'md', lg: 'lg' }} color={'gray.500'}>
-              The project board is an exclusive resource for contract work. It&apos;s
-              perfect for freelancers, agencies, and moonlighters.
+            Découvrez un monde d'exception ! Notre plateforme vous invite à explorer une collection unique d'objets rares et à participer à des enchères passionnantes. Parcourez notre sélection variée, faites des offres et trouvez des trésors uniques pour enrichir votre collection. Rejoignez-nous pour une expérience d'achat aux enchères inoubliable !
             </Text>
             <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
              <Button
                 rounded={'full'}
-                bg={'blue.400'}
+                bg={'#F2B0AE'}
                 color={'white'}
                 _hover={{
                   bg: 'blue.500',
                 }}>
-                Create Project
+                ACHETEZ
               </Button>
-              <Button rounded={'full'}>How It Works</Button>
+              <Button rounded={'full'}>ENCHÈRES</Button>
             </Stack>
           </Stack>
         </Flex>
@@ -194,8 +195,8 @@ const MissionAndOverviewSection = () => {
       </Stack>
 
       <chakra.h2 fontSize="4xl" fontWeight="bold" textAlign="center" mb={2} mt={10}>
-        How it works?
-      </chakra.h2>
+      Comment ça fonctionne?
+            </chakra.h2>
       <Stack
         direction={{ base: 'column', md: 'row' }}
         spacing={{ base: 0, md: 3 }}
@@ -210,7 +211,7 @@ const MissionAndOverviewSection = () => {
                   fontWeight="bold"
                   boxShadow="md"
                   color="white"
-                  bg="blue.400"
+                  bg="#F2B0AE"
                   rounded="full"
                   justifyContent="center"
                   alignItems="center"
@@ -230,74 +231,71 @@ const MissionAndOverviewSection = () => {
         <Image
           boxSize={{ base: 'auto', md: 'lg' }}
           objectFit="contain"
-          src={`https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&auto=format&fit=crop&w=334&q=80`}
+          src={auction}
           rounded="lg"
         />
       </Stack>
       <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
         <chakra.h1 textAlign={'center'} fontSize={'4xl'} py={10} fontWeight={'bold'}>
-          Our company is expanding, you could be too.
-        </chakra.h1>
+        Notre entreprise est en pleine expansion, vous pourriez l'être aussi.
+                </chakra.h1>
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
-          <StatsCard title={'Users'} stat={'5,000'} icon={<BsPerson size={'3em'} />} />
-          <StatsCard title={'Servers'} stat={'1,000'} icon={<FiServer size={'3em'} />} />
-          <StatsCard title={'Datacenters'} stat={'7'} icon={<GoLocation size={'3em'} />} />
+          <StatsCard title={'Utilisateurs Actifs'} stat={'5,000'} icon={<BsPerson size={'3em'} />} />
+          <StatsCard title={'Enchères Quotidiennes '} stat={'1,000'} icon={<FiServer size={'3em'} />} />
+          <StatsCard title={"Catégories d'Articles"} stat={'+5'} icon={<MdOutlineCategory  size={'3em'} />} />
         </SimpleGrid>
       </Box>
-      <Box bg={useColorModeValue('gray.100', 'gray.700')}>
+      <Box >
         <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
           <Stack spacing={0} align={'center'}>
-            <Heading>Our Clients Speak</Heading>
-            <Text>We have been working with clients around the world</Text>
+            <Heading>Avis du Mois d'Octobre</Heading>
+            <Text>Nous travaillons avec des clients du monde entier</Text>
           </Stack>
           <Stack
             direction={{ base: 'column', md: 'row' }}
             spacing={{ base: 10, md: 4, lg: 10 }}>
             <Testimonial>
               <TestimonialContent>
-                <TestimonialHeading>Efficient Collaborating</TestimonialHeading>
+                <TestimonialHeading>Collaboration Efficace</TestimonialHeading>
                 <TestimonialText>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed
-                  imperdiet nibh lectus feugiat nunc sem.
+                Nous avons eu le plaisir de collaborer efficacement avec des clients du monde entier. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed imperdiet nibh lectus feugiat nunc sem.
                 </TestimonialText>
               </TestimonialContent>
               <TestimonialAvatar
                 src={
                   'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
                 }
-                name={'Jane Cooper'}
+                name={'Chaima Ben Othmen'}
                 title={'CEO at ABC Corporation'}
               />
             </Testimonial>
             <Testimonial>
               <TestimonialContent>
-                <TestimonialHeading>Intuitive Design</TestimonialHeading>
+                <TestimonialHeading>Design Intuitif</TestimonialHeading>
                 <TestimonialText>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed
-                  imperdiet nibh lectus feugiat nunc sem.
+                Notre expérience a été améliorée par le design intuitif. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed imperdiet nibh lectus feugiat nunc sem.
                 </TestimonialText>
               </TestimonialContent>
               <TestimonialAvatar
                 src={
                   'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
                 }
-                name={'Jane Cooper'}
+                name={'Foulen ben foulen'}
                 title={'CEO at ABC Corporation'}
               />
             </Testimonial>
             <Testimonial>
               <TestimonialContent>
-                <TestimonialHeading>Mindblowing Service</TestimonialHeading>
+                <TestimonialHeading>Service Époustouflant</TestimonialHeading>
                 <TestimonialText>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed
-                  imperdiet nibh lectus feugiat nunc sem.
+                Le service fourni nous a véritablement impressionnés. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed imperdiet nibh lectus feugiat nunc sem.
                 </TestimonialText>
               </TestimonialContent>
               <TestimonialAvatar
                 src={
                   'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
                 }
-                name={'Jane Cooper'}
+                name={'Abd el kader'}
                 title={'CEO at ABC Corporation'}
               />
             </Testimonial>
@@ -325,43 +323,21 @@ const MissionAndOverviewSection = () => {
           <Flex flexWrap="wrap" alignItems="start" justify="space-between">
             <Box w={{ base: '100%', sm: '50%', md: 'max-content' }} mb={{ base: '1.5rem', lg: '0' }}>
               <Heading as="h5" color="gray.700" mb="0.5rem" fontSize="0.875rem" fontWeight="600">
-                Company Name
+              <Link href="#" mr="0.5rem">Sopra HR</Link>
               </Heading>
-              <List lineHeight="2" justifyContent="center">
-                <LinkItem text="Careers" />
-                <LinkItem text="News" />
-                <LinkItem text="Policies" />
-                <LinkItem text="Help" />
-                <LinkItem text="Diversity & Belonging" />
-              </List>
+              
             </Box>
             <Box w={{ base: '100%', sm: '50%', md: 'max-content' }} mb={{ base: '1.5rem', lg: '0' }}>
               <Heading as="h5" color="gray.700" mb="0.5rem" fontSize="0.875rem" fontWeight="600">
-                Discover
+              <Link href="#" mr="0.5rem"> ENCHÈRES </Link>
               </Heading>
-              <List lineHeight="2">
-                <LinkItem text="Trust &amp; Safety" />
-                <LinkItem text="Travel Credit" />
-                <LinkItem text="Gift Cards" />
-                <LinkItem text="Airbnb Citizen" />
-                <LinkItem text="Business Travel" />
-                <LinkItem text="Things To Do" isTag={true} tagText="New" />
-                <LinkItem text="Airbnbmag" />
-              </List>
+              
             </Box>
             <Box w={{ base: '100%', sm: '50%', md: 'max-content' }} mb={{ base: '1.5rem', lg: '0' }}>
-              <Heading as="h5" color="gray.700" mb="0.5rem" fontSize="0.875rem" fontWeight="600">
-                Hosting
+              <Heading as="h5" color="gray.700" mb="0.5rem" fontSize="0.875rem" fontWeight="600" href="/home">
+              <Link href="#" mr="0.5rem">DASHBORD</Link>
               </Heading>
-              <List lineHeight="2">
-                <LinkItem text="Why Host" />
-                <LinkItem text="Hospitality" />
-                <LinkItem text="Responsible Hosting" />
-                <LinkItem text="Community Center" />
-                <LinkItem text="Host an Experience" isTag={true} tagText="New" />
-                <LinkItem text="Open Homes" />
-                <LinkItem text="Donations" isTag={true} tagText="New" />
-              </List>
+              
             </Box>
             <Box w={{ base: '100%', sm: '50%', md: 'max-content' }} mb={{ base: '1.5rem', lg: '0' }}>
               <Flex justify="start" mb="0.5rem" alignItems="baseline">
@@ -412,26 +388,16 @@ const MissionAndOverviewSection = () => {
                 </Link>
               </Flex>
               <List lineHeight="2">
-                <LinkItem text="Terms" />
-                <LinkItem text="Privacy" />
-                <LinkItem text="Site Map" />
+                <LinkItem text="CONTACT" />
+                
               </List>
             </Box>
           </Flex>
         </Box>
         <Flex maxW="64rem" mx="auto" alignItems="center" px={10}>
-          <svg
-            fill="blue.400"
-            style={{ width: '1.25rem', height: '1.25rem' }}
-            viewBox="0 0 1000 1000"
-            role="presentation"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path d="m499.3 736.7c-51-64-81-120.1-91-168.1-10-39-6-70 11-93 18-27 45-40 80-40s62 13 80 40c17 23 21 54 11 93-11 49-41 105-91 168.1zm362.2 43c-7 47-39 86-83 105-85 37-169.1-22-241.1-102 119.1-149.1 141.1-265.1 90-340.2-30-43-73-64-128.1-64-111 0-172.1 94-148.1 203.1 14 59 51 126.1 110 201.1-37 41-72 70-103 88-24 13-47 21-69 23-101 15-180.1-83-144.1-184.1 5-13 15-37 32-74l1-2c55-120.1 122.1-256.1 199.1-407.2l2-5 22-42c17-31 24-45 51-62 13-8 29-12 47-12 36 0 64 21 76 38 6 9 13 21 22 36l21 41 3 6c77 151.1 144.1 287.1 199.1 407.2l1 1 20 46 12 29c9.2 23.1 11.2 46.1 8.2 70.1zm46-90.1c-7-22-19-48-34-79v-1c-71-151.1-137.1-287.1-200.1-409.2l-4-6c-45-92-77-147.1-170.1-147.1-92 0-131.1 64-171.1 147.1l-3 6c-63 122.1-129.1 258.1-200.1 409.2v2l-21 46c-8 19-12 29-13 32-51 140.1 54 263.1 181.1 263.1 1 0 5 0 10-1h14c66-8 134.1-50 203.1-125.1 69 75 137.1 117.1 203.1 125.1h14c5 1 9 1 10 1 127.1.1 232.1-123 181.1-263.1z"></path>
-          </svg>
+        
           <Text color="gray.600" fontSize="0.875rem" pl="0.5rem">
-            &copy; 2019 company, Inc. All rights reserved.
+            &copy; 2023 SOPRA RH, Inc. All rights reserved.
           </Text>
         </Flex>
       </Box>
@@ -520,21 +486,21 @@ function DottedBox() {
 }
 
 const overviewList = [
-  { id: 1, label: 'Login once per day', subLabel: 'The process should be quick.' },
+  { id: 1, label: 'Connexion quotidienne simplifiée', subLabel: 'Un seul login par jour pour une expérience rapide et pratique.' },
   {
     id: 2,
-    label: 'Do your reviews',
-    subLabel: 'Reviews come from previous flashcards that you chose.'
+    label: 'Révision des enchères',
+    subLabel: 'Revoyez les enchères sélectionnées précédemment pour une expérience personnalisée et enrichissante.'
   },
   {
     id: 3,
-    label: 'Streak increase',
-    subLabel: 'Your streak increases once per day as long as you finish your reviews.'
+    label: 'Augmentation de la série de participation',
+    subLabel: 'Chaque jour, votre série de participation augmente dès que vous terminez vos évaluations.'
   },
   {
     id: 4,
-    label: 'Choose your lesson',
-    subLabel: 'This will add 5 new flashcards to your reviews.'
+    label: 'Choisissez votre leçon',
+    subLabel: 'Sélectionnez votre leçon pour intégrer cinq nouvelles enchères à évaluer, approfondissant ainsi votre expertise.'
   }
 ];
 

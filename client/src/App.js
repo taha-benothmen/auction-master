@@ -17,6 +17,8 @@ import SingleResidence from './components/SingleResidence';
 import Error from './components/Error';
 import SearchResidences from './components/SearchResidences';
 import Admin from './components/Admin';
+import Adminlog from './Dashbord/Adminlog.js';
+import NavbarDash from './Dashbord/NavbarDash.js';
 
 function App() {
   const location = useLocation();
@@ -28,11 +30,11 @@ function App() {
       setForceNavbarRerender(false);
     };
   }, [location]);
-
+  const isHomeaPage = location.pathname.includes('/adminlog');
   return (
     <ChakraProvider>
-      <Navbar />
-      <Routes>
+ {isHomeaPage ? <NavbarDash /> : <Navbar />}
+       <Routes>
         <Route path="/" element={<Login />} exact />
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Homepage />} />
@@ -47,7 +49,10 @@ function App() {
         <Route path="/searchresidences" element={<SearchResidences />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/*" element={<Error />} />
+        <Route path='/adminlog' element={<Adminlog/>}></Route>
+
       </Routes>
+    
     </ChakraProvider>
   );
 }

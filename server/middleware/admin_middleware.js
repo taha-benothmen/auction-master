@@ -9,7 +9,7 @@ exports.adminGet = async (req) => {
     WHERE username LIKE '%${req.body.username}%' AND
     name LIKE '%${req.body.name}%' AND
     description LIKE '%${req.body.description}%' AND
-    price >= ${req.body.min}`;
+    price >= ${req.body.min}`; 
     const result = await db.query(query);
     return result;
   } else if (table === 'users') {

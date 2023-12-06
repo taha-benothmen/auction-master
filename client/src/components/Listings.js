@@ -210,7 +210,9 @@ const Listings = () => {
         </Flex>
       </Box>
       <InputGroup>
-        <Select
+        <Select 
+          w="60%" mr="10%"
+          left="20%"           
           placeholder="Select category"
           onChange={handleDropDown}
           variant="filled"

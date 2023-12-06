@@ -6,3 +6,4 @@ const admin_controller = require('../controllers/admin_controller');
 router.route('/:table').post(isAuthenticated, admin_controller.adminGet);
 
 module.exports = router;
+ 

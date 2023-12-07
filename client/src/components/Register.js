@@ -60,7 +60,13 @@ const Register = () => {
           cookies.set('USERNAME', res.data.username, {
             path: '/',
           });
-          history('/home', {});
+          alert('Inscription en attente de validation');
+
+        cookies.remove('TOKEN');
+        cookies.remove('USERNAME');
+
+          history.push('/');
+          history('/')
         })
         .catch((e) => {
           alert(e.response.data.message);

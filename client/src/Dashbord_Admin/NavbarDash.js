@@ -194,10 +194,10 @@ const Profile = () => {
 
                           <PopoverCloseButton />
                           <PopoverBody>
-                            <Link to="/homeadmin">
+                            <Link to="/mangmentrh">
                               {(IsAdmin == 1) && <Button bg="white">Admin</Button>}
                             </Link>
-                            <Link to="/home">
+                            <Link to="/validateusers">
                               {(IsRh == 1) && <Button bg="white">RH</Button>}
                             </Link>
                             <Link to="/home">

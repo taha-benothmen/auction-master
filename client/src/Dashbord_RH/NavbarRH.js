@@ -187,7 +187,7 @@ const Profile = () => {
 
                         <PopoverCloseButton />
                         <PopoverBody>
-                          <Link to="/homeadmin">
+                          <Link to="/mangmentrh">
                             {(IsAdmin == 1) && <Button bg="white">Admin</Button>}
                           </Link>
                           <Link to="/validateusers">

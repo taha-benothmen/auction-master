@@ -7,8 +7,8 @@ exports.isValidUsername = async (username) => {
   const isAvailableUser = userRes[0].userExists === 0;
   return isAvailableUser;
 };
-
-exports.addNewUser = async (username, password, name, school) => {
+exports.addNewUser = async (username, password, name) => {
+  const school = 'Voitures';
   const insertUserQuery = 'INSERT INTO users(username, password, name, school_name) VALUES (?, ?, ?, ?)';
   try {
     await db.query(insertUserQuery, [username, password, name, school]);

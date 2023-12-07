@@ -333,7 +333,7 @@ const Listings = () => {
         >
           <Flex align="center">
             <Icon as={AddIcon} boxSize={4} mr="2" />
-            Ajouter une thème
+            Ajouter un responsable RH
           </Flex>
         </Button>
       </Box>
@@ -350,7 +350,7 @@ const Listings = () => {
           <DrawerHeader> Ajouter responsable RH</DrawerHeader>
 
           <DrawerBody>
-            <FormLabel htmlFor="newSchool">Ajouter une RH responsable</FormLabel>
+            <FormLabel htmlFor="newSchool">Ajouter un RH responsable</FormLabel>
 
             <SimpleGrid columns={1} spacing={5}>
               <FormControl isRequired flexBasis="30%">

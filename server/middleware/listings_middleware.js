@@ -4,8 +4,11 @@ const path = require('path');
 
 exports.retrieve_school_listings = async (req) => {
   const school = req.query.school ? req.query.school : req.user.school;
-  const joinSearchQuery = `SELECT l1.lid, l1.name, l1.price, l1.image,
-                            
+  const joinSearchQuery = `SELECT l1.lid, l1.name, l1.price, l1.image, 
+                            CASE 
+                              WHEN EXISTS (SELECT * FROM sublets WHERE lid = l1.lid) THEN 'sublet'
+                              ELSE 'item'
+                            END AS type 
                             FROM listings l1
                             INNER JOIN users ON l1.username = users.username 
                             WHERE school_name = ?`;
@@ -30,15 +33,17 @@ exports.get_single_listing = async (req) => {
   }
 };
 
+
 exports.add_new_listing = async (req) => {
-  const listings_query = `INSERT INTO listings (name, username, price, description, image)
-                    VALUES(?, ?, ?, ?, ?)`;
+  const listings_query = `INSERT INTO listings (name, username, price, description, image, theme)
+                           VALUES (?, ?, ?, ?, ?, ?)`;
   await db.query(listings_query, [
     req.body.name,
     req.user.username,
     req.body.price,
     req.body.description,
     req.file.filename,
+    req.body.category, // Include the category in the query
   ]);
 
   if (req.body.type === 'sublet') {

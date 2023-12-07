@@ -152,9 +152,7 @@ const Profile = () => {
                 <Button bg="white">ENCHÈRE</Button>
               </Link>
 
-              <Link to="/housinginfoP">
-                <Button bg="white">DASHBORD</Button>
-              </Link>
+             
 
               <Link to="/contact">
                 <Button bg="white">CONTACTS</Button>
@@ -202,7 +200,7 @@ const Profile = () => {
 
                           <PopoverCloseButton />
                           <PopoverBody>
-                            <Link to="/homeadmin">
+                            <Link to="/mangmentrh">
                               {(IsAdmin == 1) && <Button bg="white">Admin</Button>}
                             </Link>
                             <Link to="/validateusers">
@@ -263,11 +261,11 @@ const Profile = () => {
           </ModalHeader>
           <ModalCloseButton />
           <Flex gap="1rem" justifyContent="center">
-            <Button colorScheme="green" marginBottom="1rem" onClick={() => { logout();  logoutModal.onClose()}}>
+            <Button color="green" marginBottom="1rem" onClick={() => { logout();  logoutModal.onClose()}}>
               Oui
             </Button>
             <Button
-              colorScheme="red"
+              color="pink"
               marginBottom="1rem"
               onClick={logoutModal.onClose}
             >
@@ -278,7 +276,7 @@ const Profile = () => {
       </Modal>
 
       <Modal
-        borderRadius="2rem"
+        borderRadius="3rem"
         isOpen={deleteModal.isOpen}
         onClose={deleteModal.onClose}
         isCentered
@@ -286,7 +284,7 @@ const Profile = () => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader textAlign="center">
-            Êtes-vous sûr de vouloir supprimer votre compte ?
+            Êtes-vous sûr de vouloir supprimer votre compte?
           </ModalHeader>
           <ModalCloseButton />
           <Flex gap="1rem" justifyContent="center">

@@ -269,7 +269,7 @@ const Listings = () => {
         >
           <Flex align="center">
             <Icon as={AddIcon} boxSize={4} mr="2" />
-            Ajouter une thème
+            Ajouter un thème
           </Flex>
         </Button>
       </Box>
@@ -283,12 +283,12 @@ const Listings = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader> Ajouter une thème</DrawerHeader>
+          <DrawerHeader> Ajouter un thème</DrawerHeader>
 
           <DrawerBody>
 
             <FormControl isRequired>
-              <FormLabel htmlFor="newSchool">Ajouter une thème</FormLabel>
+              <FormLabel htmlFor="newSchool">Ajouter un thème</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"

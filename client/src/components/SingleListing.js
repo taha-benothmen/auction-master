@@ -56,7 +56,7 @@ export default function SingleListing() {
   const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
     useNumberInput({
       step: 0.01,
-      defaultValue: 1.53,
+      defaultValue: listing.price,
       min: 1,
       max: 6,
       precision: 2,
@@ -137,7 +137,7 @@ export default function SingleListing() {
     axios
       .post(
         `http://localhost:1234/comments/${lid}`,
-        { content: newComment + 'DT' },
+        { content: newComment },
         axiosConfig
       )
       .then((res) => {
@@ -183,8 +183,22 @@ export default function SingleListing() {
         `http://localhost:1234/updateListingPrice/`, dataObject)
       .then((res) => {
         alert("Bid placed !")
+        axios.post(
+          'http://localhost:1234/notifications',
+          {
+            title: 'Bid price updated!',
+            username: listing.username, // Seller's username
+            content: `The bid price for your post ${listing.name} has been updated to ${bidPrice}TND BY ${username}.`,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         history('/listings');
       })
+      
       .catch((e) => console.log(e));
   };
 
@@ -347,13 +361,42 @@ export default function SingleListing() {
                 );
               })}
             </Box>
-
             <Flex justifyContent="center" alignItems="center" mt="auto" pb={4} >
+
+              <InputGroup>
+
+                <HStack maxW="170px">
+                  <Button {...inc} onClick={() => setBidPrice((prev) => prev + 1)}>
+                    +
+                  </Button>
+                  <Input
+                    {...input}
+                    defaultValue={listing.price}
+                    value={bidPrice}
+                    onChange={(e) => setBidPrice(e.target.value)}
+                  />
+                </HStack>
+                <InputRightElement width="4rem">
+                  <ImHammer2
+                    color="gray.400"
+                    cursor="pointer"
+                    transition="color 0.2s ease"
+                    _hover={{ color: '#F2B0AE' }}
+                    onClick={submitBidPrice}
+
+                  />
+                </InputRightElement>
+
+              </InputGroup>
+
+            </Flex>
+            <Flex justifyContent="center" alignItems="center" mt="auto" pb={4} >
+
               <InputGroup>
 
                 <Input
                   placeholder="Lancer votre enchére"
-                  type="number"
+                  type="text"
                   value={newComment}
                   onChange={(e) => {
                     setNewComment(e.target.value);
@@ -366,13 +409,12 @@ export default function SingleListing() {
                 />
 
                 <InputRightElement width="4rem">
-                  <ImHammer2
+                <ChatIcon
                     color="gray.400"
                     cursor="pointer"
                     transition="color 0.2s ease"
-                    _hover={{ color: '#F2B0AE' }}
+                    _hover={{ color: 'blue.500' }}
                     onClick={submitComment}
-
                   />
                 </InputRightElement>
 

@@ -35,8 +35,8 @@ exports.get_single_listing = async (req) => {
 
 
 exports.add_new_listing = async (req) => {
-  const listings_query = `INSERT INTO listings (name, username, price, description, image, theme)
-                           VALUES (?, ?, ?, ?, ?, ?)`;
+  const listings_query = `INSERT INTO listings (name, username, price, description, image, theme, end_date)
+                           VALUES (?, ?, ?, ?, ?, ?,?)`;
   await db.query(listings_query, [
     req.body.name,
     req.user.username,
@@ -44,6 +44,7 @@ exports.add_new_listing = async (req) => {
     req.body.description,
     req.file.filename,
     req.body.category, // Include the category in the query
+    req.body.dateTime, // Include the category in the query
   ]);
 
   if (req.body.type === 'sublet') {

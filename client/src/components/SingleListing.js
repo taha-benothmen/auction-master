@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import { useNavigate } from 'react-router-dom';
 import { ImHammer2 } from "react-icons/im";
 import React from 'react';
+import CountdownTimer from './CountdownTimer';
 import NewListing from './NewListing';
 import {
   Box,
@@ -28,13 +29,6 @@ import {
   useNumberInput,
   HStack
 } from '@chakra-ui/react';
-import {
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-} from '@chakra-ui/react'
 import { DeleteIcon, ChatIcon, EmailIcon, EditIcon, HamburgerIcon } from '@chakra-ui/icons';
 
 export default function SingleListing() {
@@ -52,6 +46,21 @@ export default function SingleListing() {
   const lid = window.location.pathname.split('/')[2];
 
   const [bidPrice, setBidPrice] = useState(0);
+
+
+  const [countdownExpired, setCountdownExpired] = useState(false);
+
+  useEffect(() => {
+    const difference = new Date(listing.end_date) - new Date();
+
+    if (difference <= 0) {
+      setCountdownExpired(true);
+    } else {
+      setCountdownExpired(false);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listing.end_date]);
 
   const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
     useNumberInput({
@@ -93,6 +102,7 @@ export default function SingleListing() {
       })
       .then((res) => {
         setListing({ ...res.data });
+        console.log("🚀 ~ file: SingleListing.js:89 ~ .then ~ ...res.data :", res.data)
       })
       .catch((e) => console.log(e));
   };
@@ -198,7 +208,7 @@ export default function SingleListing() {
         );
         history('/listings');
       })
-      
+
       .catch((e) => console.log(e));
   };
 
@@ -215,6 +225,12 @@ export default function SingleListing() {
       console.log(error);
     }
   };
+
+  const isoString = listing.end_date;
+  const date = new Date(isoString);
+  const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+
+
 
   return (
     <Box
@@ -281,10 +297,18 @@ export default function SingleListing() {
           <Flex flexDirection="column" height="100%">
             <Box flex="1" overflowY={'auto'}>
               <Heading size="xl">{listing.name}</Heading>
+              {/* <Heading size="sm">{formattedDate}</Heading> */}
+              <Heading size="xs">
+                {countdownExpired ? (
+                  <p>Countdown expired!</p>
+                ) : (
+                  <CountdownTimer targetDate={listing.end_date} />
+                )}
+              </Heading>
               <Heading size="md" mb="2">
                 {listing.price}TND
               </Heading>
-              {listing.username === username && (
+              {listing.username == username && (
                 <Flex alignItems="center">
                   {/* Edit Button */}
                   <Button variant="ghost" onClick={handleOpenEditModal}>
@@ -361,66 +385,70 @@ export default function SingleListing() {
                 );
               })}
             </Box>
-            <Flex justifyContent="center" alignItems="center" mt="auto" pb={4} >
 
-              <InputGroup>
+            {countdownExpired ? (<p>Countdown expired!</p>) : (
+              <>
+                <Flex justifyContent="center" alignItems="center" mt="auto" pb={4} >
+                  <InputGroup>
 
-                <HStack maxW="170px">
-                  <Button {...inc} onClick={() => setBidPrice((prev) => prev + 1)}>
-                    +
-                  </Button>
-                  <Input
-                    {...input}
-                    defaultValue={listing.price}
-                    value={bidPrice}
-                    onChange={(e) => setBidPrice(e.target.value)}
-                  />
-                </HStack>
-                <InputRightElement width="4rem">
-                  <ImHammer2
-                    color="gray.400"
-                    cursor="pointer"
-                    transition="color 0.2s ease"
-                    _hover={{ color: '#F2B0AE' }}
-                    onClick={submitBidPrice}
+                    <HStack maxW="170px">
+                      <Button {...inc} onClick={() => setBidPrice((prev) => prev + 1)}>
+                        +
+                      </Button>
+                      <Input
+                        {...input}
+                        defaultValue={listing.price}
+                        value={bidPrice}
+                        onChange={(e) => setBidPrice(e.target.value)}
+                      />
+                    </HStack>
+                    <InputRightElement width="4rem">
+                      <ImHammer2
+                        color="gray.400"
+                        cursor="pointer"
+                        transition="color 0.2s ease"
+                        _hover={{ color: '#F2B0AE' }}
+                        onClick={submitBidPrice}
 
-                  />
-                </InputRightElement>
+                      />
+                    </InputRightElement>
 
-              </InputGroup>
+                  </InputGroup>
 
-            </Flex>
-            <Flex justifyContent="center" alignItems="center" mt="auto" pb={4} >
+                </Flex>
+                <Flex justifyContent="center" alignItems="center" mt="auto" pb={4} >
 
-              <InputGroup>
+                  <InputGroup>
 
-                <Input
-                  placeholder="Lancer votre enchére"
-                  type="text"
-                  value={newComment}
-                  onChange={(e) => {
-                    setNewComment(e.target.value);
-                  }}
-                  borderColor='#F2B0AE'
-                  focusBorderColor='#F2B0AE'
-                  pr="4rem"
+                    <Input
+                      placeholder="Lancer votre enchére"
+                      type="text"
+                      value={newComment}
+                      onChange={(e) => {
+                        setNewComment(e.target.value);
+                      }}
+                      borderColor='#F2B0AE'
+                      focusBorderColor='#F2B0AE'
+                      pr="4rem"
 
 
-                />
+                    />
 
-                <InputRightElement width="4rem">
-                <ChatIcon
-                    color="gray.400"
-                    cursor="pointer"
-                    transition="color 0.2s ease"
-                    _hover={{ color: 'blue.500' }}
-                    onClick={submitComment}
-                  />
-                </InputRightElement>
+                    <InputRightElement width="4rem">
+                      <ChatIcon
+                        color="gray.400"
+                        cursor="pointer"
+                        transition="color 0.2s ease"
+                        _hover={{ color: 'blue.500' }}
+                        onClick={submitComment}
+                      />
+                    </InputRightElement>
 
-              </InputGroup>
+                  </InputGroup>
 
-            </Flex>
+                </Flex>
+              </>
+            )}
           </Flex>
         </Box>
       </Flex>

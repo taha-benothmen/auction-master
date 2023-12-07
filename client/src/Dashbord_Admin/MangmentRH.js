@@ -127,9 +127,9 @@ const Listings = () => {
   const UpdateRH = (user) => {
 
     const dataObject = {
-      newUsername:emailRH,
+      newUsername: emailRH,
       newPassword: passwordRH,
-      newName:  usernameRH,
+      newName: usernameRH,
       oldUsername: user.username,
     };
     console.log("🚀 ~ file: MangmentRH.js:135 ~ UpdateRH ~ dataObject:", dataObject)
@@ -256,7 +256,7 @@ const Listings = () => {
                         <FormControl isRequired>
                           <InputGroup>
                             <InputLeftElement
-                             
+
                               pointerEvents="none"
                               color="gray.300"
                               fontSize="1.2em"

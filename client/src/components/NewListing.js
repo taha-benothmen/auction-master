@@ -39,6 +39,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [availableSchools, setAvailableSchools] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(''); // State to store selected category
+  const [dateTime, setDateTime] = useState('');
 
   const [file, setFile] = useState();
   const toast = useToast();
@@ -111,6 +112,9 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
     formData.append('residence', residence);
     formData.append('image', file);
     formData.append('category', selectedCategory); // Include the selected category in form data
+    formData.append('dateTime', dateTime); // Include the selected category in form data
+    console.log("🚀 ~ file: NewListing.js:116 ~ submit ~ dateTime:", dateTime)
+
     if (props.listing) {
       console.log(formData);
       axios.put(
@@ -164,25 +168,25 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
-         
+
         </FormControl>
-         <InputGroup>
-         <Select
-              placeholder="Choisir un thème"
-              variant="filled"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)} // Capture selected category
-            >
-              {availableSchools.map((school) => (
-                <option key={school.id} value={school.school_name}>
-                  {school.school_name}
-                </option>
-              ))}
-            </Select>
-      </InputGroup>
+        <InputGroup>
+          <Select
+            placeholder="Choisir un thème"
+            variant="filled"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)} // Capture selected category
+          >
+            {availableSchools.map((school) => (
+              <option key={school.id} value={school.school_name}>
+                {school.school_name}
+              </option>
+            ))}
+          </Select>
+        </InputGroup>
       </Box>
     );
-        }
+  }
 
   return (
     <Modal
@@ -253,6 +257,19 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
                   resize="vertical"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                />
+              </FormControl>
+
+              <FormControl isRequired>
+                <FormLabel>date de finiton</FormLabel>
+                <Input
+                  type="datetime-local"
+                  variant="filled"
+                  placeholder="end date"
+                  size="md"
+                  resize="vertical"
+                  value={dateTime}
+                  onChange={(e) => setDateTime(e.target.value)}
                 />
               </FormControl>
 

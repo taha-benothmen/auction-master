@@ -329,21 +329,3 @@ app.get('/getAllThemes', (req, res) => {
   });
 });
 
-// POST endpoint to handle form data and insert into the database
-app.post('/addNewListing', (req, res) => {
-  const { username, description, name, price, image, theme } = req.body;
-
-  // const decodedImage = Buffer.from(image, 'base64');
-
-  const sql = 'INSERT INTO listings (username, description, name, price, image, theme) VALUES (?, ?, ?, ?, ?, ?)';
-  const values = [username, description, name, price, image, theme];
-  connection.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      res.status(500).json({ error: 'Error executing query' });
-      return;
-    }
-    res.status(200).json({ message: 'Form data inserted successfully' });
-  });
-});
-

@@ -33,7 +33,7 @@ const Listings = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [filterApplied, setFilterApplied] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState(null);
-  const [availableSchools, setAvailableSchools] = useState([]);
+  const [availableThemes, setAvailableThemes] = useState([]);
 
 
   const handleCloseModal = () => {
@@ -48,7 +48,7 @@ const Listings = () => {
       .then((res) => {
         setListings(res.data);
         setFilteredListings(res.data);
-        getSchoolsList();
+        getThemesList();
       })
       .catch((e) => {
         console.log('Error fetching listings data');
@@ -86,18 +86,18 @@ const Listings = () => {
     }
   };
 
-  async function getSchoolsList() {
+  async function getThemesList() {
     try {
-      await axios.get('http://localhost:1234/schools').then((res) => {
-        const modifiedData = res.data.map((school) => ({
-          ...school,
+      await axios.get('http://localhost:1234/themes').then((res) => {
+        const modifiedData = res.data.map((theme) => ({
+          ...theme,
           id: uuidv4(),
         }));
         console.log(modifiedData);
         // Update the state with the modified data
-        setAvailableSchools(modifiedData);
+        setAvailableThemes(modifiedData);
       });
-      console.log(availableSchools);
+      console.log(availableThemes);
     } catch (e) {
       console.log(e);
     }
@@ -106,7 +106,7 @@ const Listings = () => {
   const handleDropDown = async (e) => {
     setSelectedSchool(e.target.value);
     await axios
-      .get(`http://localhost:1234/listings?school=${e.target.value}`, {
+      .get(`http://localhost:1234/listings?theme=${e.target.value}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -218,8 +218,8 @@ const Listings = () => {
           onChange={handleDropDown}
           variant="filled"
         >
-          {availableSchools.map((school) => {
-            return <option key={school.id}>{school.school_name}</option>;
+          {availableThemes.map((theme) => {
+            return <option key={theme.id}>{theme.theme_name}</option>;
           })}
         </Select>
       </InputGroup>

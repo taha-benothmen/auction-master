@@ -35,11 +35,11 @@ const db = require('../mysql/mysql');
   
     editUser: (req, res) => {
       const { username } = req.params;
-      const { name, school_name, description } = req.body;
+      const { name, theme_name, description } = req.body;
       const user = getUserByUsername(username);
       if (user) {
         user.name = name || user.name;
-        user.school_name = school_name || user.school_name;
+        user.theme_name = theme_name || user.theme_name;
         user.description = description || user.description;
         res.json({ message: 'User updated successfully', user });
       } else {

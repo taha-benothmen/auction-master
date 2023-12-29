@@ -49,7 +49,7 @@ export default function SingleNotification(props) {
           size="sm"
           colorScheme="red"
         >
-          Delete
+          Supprimer
         </Button>
       </Flex>
     </>

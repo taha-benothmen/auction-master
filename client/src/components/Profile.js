@@ -28,7 +28,7 @@ const Profile = () => {
   const logoutModal = useDisclosure();
   const deleteModal = useDisclosure();
   const [description, setDescription] = useState('');
-  const [school, setSchool] = useState('');
+  const [theme, setSchool] = useState('');
 
   const history = useNavigate();
   const cookies = new Cookies();
@@ -44,7 +44,7 @@ const Profile = () => {
           })
           .then((res) => {
             setDescription(res.data.description);
-            setSchool(res.data.school_name);
+            setSchool(res.data.theme_name);
           })
           .catch((e) => {
             console.log(e);

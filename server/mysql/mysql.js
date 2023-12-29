@@ -6,7 +6,7 @@ const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'auction-db',
+  database: 'enchere_app-db',
 });
 
 module.exports = pool;

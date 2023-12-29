@@ -10,6 +10,7 @@ import {
   Checkbox,
   HStack,
   Heading,
+  useToast
 } from '@chakra-ui/react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -159,7 +160,7 @@ const Users = () => {
   const { token } = useContext(PersonContext);
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
-  const [school, setSchool] = useState('');
+  const [theme, setSchool] = useState('');
   const [description, setDescription] = useState('');
   const [info, setInfo] = useState();
   const [attributes, setAttributes] = useState([]);
@@ -186,7 +187,7 @@ const Users = () => {
       await axios
         .post(
           'http://localhost:1234/admin/users',
-          { attributes, username, name, school, description },
+          { attributes, username, name, theme, description },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -224,12 +225,12 @@ const Users = () => {
       </HStack>
       <HStack>
         <Checkbox
-          key="school_name"
-          onChange={() => handleCheckboxChange('school_name')}
+          key="theme_name"
+          onChange={() => handleCheckboxChange('theme_name')}
         />
         <Input
-          placeholder="school"
-          value={school}
+          placeholder="theme"
+          value={theme}
           onChange={(e) => setSchool(e.target.value)}
         ></Input>
       </HStack>
@@ -254,8 +255,8 @@ const Users = () => {
                   <p>username: {info.username}</p>
                 )}
                 {attributes.includes('name') && <p>name: {info.name}</p>}
-                {attributes.includes('school_name') && (
-                  <p>school: {info.school_name}</p>
+                {attributes.includes('theme_name') && (
+                  <p>theme: {info.theme_name}</p>
                 )}
                 {attributes.includes('description') && (
                   <p>description: {info.description}</p>
@@ -271,7 +272,7 @@ const Users = () => {
 const Residences = () => {
   const { token } = useContext(PersonContext);
   const [resName, setResName] = useState('');
-  const [schoolName, setSchoolName] = useState('');
+  const [themeName, setSchoolName] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('');
@@ -303,7 +304,7 @@ const Residences = () => {
           {
             attributes,
             resName,
-            schoolName,
+            themeName,
             streetAddress,
             postalCode,
             country,
@@ -338,12 +339,12 @@ const Residences = () => {
       </HStack>
       <HStack>
         <Checkbox
-          key="school_name"
-          onChange={() => handleCheckboxChange('school_name')}
+          key="theme_name"
+          onChange={() => handleCheckboxChange('theme_name')}
         />
         <Input
-          placeholder="schoolName"
-          value={schoolName}
+          placeholder="themeName"
+          value={themeName}
           onChange={(e) => setSchoolName(e.target.value)}
         ></Input>
       </HStack>
@@ -389,8 +390,8 @@ const Residences = () => {
                 {attributes.includes('res_name') && (
                   <p>Residence Name: {info.res_name}</p>
                 )}
-                {attributes.includes('school_name') && (
-                  <p>School Name: {info.school_name}</p>
+                {attributes.includes('theme_name') && (
+                  <p>School Name: {info.theme_name}</p>
                 )}
                 {attributes.includes('street_address') && (
                   <p>Street Address: {info.street_address}</p>

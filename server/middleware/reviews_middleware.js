@@ -2,10 +2,10 @@ const db = require('../mysql/mysql');
 
 exports.getReviews = async (req) => {
   try {
-    const query = `SELECT rid, username, description, rating FROM reviews WHERE res_name=? AND school_name=?`;
+    const query = `SELECT rid, username, description, rating FROM reviews WHERE res_name=? AND theme_name=?`;
     const queryResult = await db.query(query, [
       req.params.residence,
-      req.user.school,
+      req.user.theme,
     ]);
     return queryResult;
   } catch (e) {
@@ -15,10 +15,10 @@ exports.getReviews = async (req) => {
 
 exports.getRating = async (req) => {
   try {
-    const query = `SELECT AVG(rating) AS overall FROM reviews WHERE res_name=? AND school_name=?`;
+    const query = `SELECT AVG(rating) AS overall FROM reviews WHERE res_name=? AND theme_name=?`;
     const queryResult = await db.query(query, [
       req.params.residence,
-      req.user.school,
+      req.user.theme,
     ]);
     return queryResult;
   } catch (e) {
@@ -28,8 +28,8 @@ exports.getRating = async (req) => {
 
 exports.getAllResidenceReviews = async (req) => {
   try {
-    const query = `SELECT res_name, AVG(rating) AS overall FROM reviews WHERE school_name=? GROUP BY res_name HAVING COUNT(*) > 1`;
-    const queryResult = await db.query(query, [req.user.school]);
+    const query = `SELECT res_name, AVG(rating) AS overall FROM reviews WHERE theme_name=? GROUP BY res_name HAVING COUNT(*) > 1`;
+    const queryResult = await db.query(query, [req.user.theme]);
     return queryResult;
   } catch (e) {
     throw e;
@@ -38,12 +38,12 @@ exports.getAllResidenceReviews = async (req) => {
 
 exports.createResidenceReview = async (req) => {
   try {
-    const query = `INSERT INTO reviews(username, description, res_name, school_name, rating) VALUES (?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO reviews(username, description, res_name, theme_name, rating) VALUES (?, ?, ?, ?, ?)`;
     await db.query(query, [
       req.user.username,
       req.body.content,
       req.params.residence,
-      req.user.school,
+      req.user.theme,
       req.body.rating,
     ]);
   } catch (e) {

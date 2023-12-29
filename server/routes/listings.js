@@ -5,7 +5,7 @@ const router = express.Router();
 const listings_controller = require('../controllers/listings_controller');
 const { isAuthenticated } = require('../middleware/auth_middleware');
 
-router.get('/', isAuthenticated, listings_controller.retrieve_school_listings)
+router.get('/', isAuthenticated, listings_controller.retrieve_theme_listings)
 
 router.get('/:id', isAuthenticated, listings_controller.getSingleListing);
 

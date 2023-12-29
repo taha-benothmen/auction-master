@@ -30,6 +30,8 @@ import {
 export default function NewListing({ props, isOpen, onOpen, onClose }) {
   const [name, setName] = useState();
   const [price, setPrice] = useState();
+  const [price_deb, setPrice_deb] = useState();
+
   const [description, setDescription] = useState();
   const [type, setType] = useState('item');
   const [quantity, setQuantity] = useState();
@@ -37,7 +39,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
   const [residence, setResidence] = useState();
   const [housingInfo, setHousingInfo] = useState([]);
   const [selectedSchool, setSelectedSchool] = useState(null);
-  const [availableSchools, setAvailableSchools] = useState([]);
+  const [availableThemes, setAvailableThemes] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(''); // State to store selected category
   const [dateTime, setDateTime] = useState('');
 
@@ -67,21 +69,21 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
       }
     };
     getHousingInfo();
-    getSchoolsList();
+    getThemesList();
 
   }, []);
-  async function getSchoolsList() {
+  async function getThemesList() {
     try {
-      await axios.get('http://localhost:1234/schools').then((res) => {
-        const modifiedData = res.data.map((school) => ({
-          ...school,
+      await axios.get('http://localhost:1234/themes').then((res) => {
+        const modifiedData = res.data.map((theme) => ({
+          ...theme,
           id: uuidv4(),
         }));
         console.log(modifiedData);
         // Update the state with the modified data
-        setAvailableSchools(modifiedData);
+        setAvailableThemes(modifiedData);
       });
-      console.log(availableSchools);
+      console.log(availableThemes);
     } catch (e) {
       console.log(e);
     }
@@ -90,6 +92,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
     if (props.listing) {
       setName(props.listing.name);
       setPrice(props.listing.price);
+      setPrice_deb(props.listing.price_deb);
       setDescription(props.listing.description);
       setType(props.listing.type);
       setQuantity(props.listing.quantity);
@@ -105,6 +108,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price);
+    formData.append('price_deb', price);
     formData.append('description', description);
     formData.append('type', type);
     formData.append('quantity', quantity);
@@ -177,9 +181,9 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)} // Capture selected category
           >
-            {availableSchools.map((school) => (
-              <option key={school.id} value={school.school_name}>
-                {school.school_name}
+            {availableThemes.map((theme) => (
+              <option key={theme.id} value={theme.theme_name}>
+                {theme.theme_name}
               </option>
             ))}
           </Select>
@@ -227,7 +231,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
               </FormControl>
 
               <FormControl isRequired>
-                <FormLabel>Prix de depart</FormLabel>
+                <FormLabel>Montant de lancement</FormLabel>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
@@ -239,7 +243,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
                     type="number"
                     min="0"
                     variant="filled"
-                    value={price}
+                    value={price} 
                     placeholder="Enter le prix"
                     onChange={(e) => setPrice(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -261,7 +265,7 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
               </FormControl>
 
               <FormControl isRequired>
-                <FormLabel>date de finiton</FormLabel>
+                <FormLabel>Date de fin</FormLabel>
                 <Input
                   type="datetime-local"
                   variant="filled"
@@ -293,15 +297,14 @@ export default function NewListing({ props, isOpen, onOpen, onClose }) {
         <ModalFooter display="flex" justifyContent="right">
           <Button
             variant="ghost"
-            colorScheme="blue"
+            colorScheme="red"
             mr={3}
             onClick={onClose}
-            border="2px solid rgb(49, 130, 206)"
           >
             Annuler
           </Button>
           <Button
-            colorScheme="blue"
+            color="#F2B0AE"
             onClick={(e) => {
               submit(e);
               toast({

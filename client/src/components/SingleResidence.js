@@ -90,7 +90,7 @@ export default function SingleResidence() {
     <>
       <Box maxWidth="1000px" margin="auto" p="1rem" overflowX="hidden">
         <Text fontWeight="bold" maxWidth="1000px" fontSize="3xl">
-          {residence.res_name} at the {residence.school_name}
+          {residence.res_name} at the {residence.theme_name}
         </Text>
         <Rating overall={overallRating / 2} />
         <Flex marginBlock="1rem">

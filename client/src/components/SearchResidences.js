@@ -66,10 +66,10 @@ export default function SearchResidences() {
             res_name
           </Checkbox>
           <Checkbox
-            key="school_name"
-            onChange={() => handleCheckboxChange('school_name')}
+            key="theme_name"
+            onChange={() => handleCheckboxChange('theme_name')}
           >
-            school_name
+            theme_name
           </Checkbox>
           <Checkbox
             key="street_address"
@@ -103,8 +103,8 @@ export default function SearchResidences() {
               {attributes.includes('res_name') && (
                 <p>res_name: {result.res_name}</p>
               )}
-              {attributes.includes('school_name') && (
-                <p>school_name: {result.school_name}</p>
+              {attributes.includes('theme_name') && (
+                <p>theme_name: {result.theme_name}</p>
               )}
               {attributes.includes('street_address') && (
                 <p>street_address: {result.street_address}</p>

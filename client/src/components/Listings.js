@@ -30,8 +30,8 @@ const Listings = () => {
   const [max, setMax] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
   const [filterApplied, setFilterApplied] = useState(false);
-  const [selectedSchool, setSelectedSchool] = useState(null);
-  const [availableSchools, setAvailableSchools] = useState([]);
+  const [selectedTheme, setSelectedTheme] = useState(null);
+  const [availableThemes, setAvailableThemes] = useState([]);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -45,11 +45,12 @@ const Listings = () => {
     axios
       .get(`http://localhost:1234/listings`, {
         headers: { Authorization: `Bearer ${token}` },
+        
       })
       .then((res) => {
         setListings(res.data);
         setFilteredListings(res.data);
-        getSchoolsList();
+        getThemesList();
       })
       .catch((e) => {
         console.log('Error fetching listings data');
@@ -87,27 +88,29 @@ const Listings = () => {
     }
   };
 
-  async function getSchoolsList() {
+  async function getThemesList() {
     try {
-      await axios.get('http://localhost:1234/schools').then((res) => {
-        const modifiedData = res.data.map((school) => ({
-          ...school,
+      await axios.get('http://localhost:1234/themes').then((res) => {
+        const modifiedData = res.data.map((theme) => ({
+          ...theme,
           id: uuidv4(),
+          
         }));
+        setAvailableThemes(modifiedData);
         console.log(modifiedData);
         // Update the state with the modified data
-        setAvailableSchools(modifiedData);
+       
       });
-      console.log(availableSchools);
+      console.log(availableThemes);
     } catch (e) {
       console.log(e);
     }
   }
 
   const handleDropDown = async (e) => {
-    setSelectedSchool(e.target.value);
+    setSelectedTheme(e.target.value);
     await axios
-      .get(`http://localhost:1234/listings?school=${e.target.value}`, {
+      .get(`http://localhost:1234/listings?theme=${e.target.value}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -210,7 +213,7 @@ const Listings = () => {
         </Flex>
       </Box>
       <InputGroup p="40px"
-     >
+      >
         <Select
           placeholder="Choisir un thème"
           onChange={handleDropDown}
@@ -218,8 +221,8 @@ const Listings = () => {
           borderColor={'#fdcac6'}
           colorScheme='pink'
         >
-          {availableSchools.map((school) => {
-            return <option key={school.school_name}>{school.school_name}</option>;
+          {availableThemes.map((theme) => {
+            return <option key={theme.theme_name}>{theme.theme_name}</option>;
           })}
         </Select>
       </InputGroup>
@@ -233,6 +236,7 @@ const Listings = () => {
               type={listing.type}
               price={listing.price}
               image={listing.image}
+              price1={listing.price_deb}
             />
           );
         })}
@@ -268,7 +272,7 @@ const Listings = () => {
   );
 };
 
-const Listing = ({ lid, name, price, image, type }) => {
+const Listing = ({ lid, name, price, image, type , price1 }) => {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -277,7 +281,7 @@ const Listing = ({ lid, name, price, image, type }) => {
 
   return (
     <Box
-    bgColor={'gray.100'}
+      bgColor={'gray.100'}
       maxW="sm"
       borderWidth="1px"
       borderRadius="lg"
@@ -319,9 +323,19 @@ const Listing = ({ lid, name, price, image, type }) => {
         >
           {name}
         </Box>
-
+        <Box
+          mt="1"
+          fontWeight="semibold"
+          as="h4"
+          lineHeight="tight"
+          noOfLines={1}
+        >
+          
+          Montant de lancement {price1} TND
+        </Box>
         <Box>
-          ${price}
+          Montant  finale {price} TND
+          
           {type === 'sublet' ? (
             <Box as="span" color="gray.600" fontSize="sm">
               /month

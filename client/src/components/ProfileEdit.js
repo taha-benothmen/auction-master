@@ -105,7 +105,7 @@ export default function EditProfile({ props }) {
     <>
       <FormControl>
         <FormControl isInvalid={usernameErr} isRequired>
-          <FormLabel>Username</FormLabel>
+          <FormLabel>Nom d'utilisateur</FormLabel>
           <Input
             variant="filled"
             ref={usernameRef}
@@ -113,23 +113,23 @@ export default function EditProfile({ props }) {
             defaultValue={props.username}
           />
           {usernameErr && (
-            <FormErrorMessage>You must input a username</FormErrorMessage>
+            <FormErrorMessage>Vous devez saisir un nom d'utilisateur</FormErrorMessage>
           )}
         </FormControl>
 
         <FormControl isInvalid={passwordErr} isRequired>
-          <FormLabel>New Password</FormLabel>
+          <FormLabel> Nouveau mot de passe</FormLabel>
           <Input ref={passwordRef} variant="filled" type="password" />
           {passwordErr && (
-            <FormErrorMessage>You must input a password</FormErrorMessage>
+            <FormErrorMessage>Vous devez saisir un mot de passe</FormErrorMessage>
           )}
         </FormControl>
 
         <FormControl isInvalid={passEqualityErr} isRequired>
-          <FormLabel>Re-Enter New Password</FormLabel>
+          <FormLabel>Ré-entrez le nouveau mot de passe</FormLabel>
           <Input ref={confirmPasswordRef} variant="filled" type="password" />
           {passEqualityErr && (
-            <FormErrorMessage>Your passwords don't match</FormErrorMessage>
+            <FormErrorMessage>Vos mots de passe ne correspondent pas</FormErrorMessage>
           )}
         </FormControl>
 
@@ -145,7 +145,7 @@ export default function EditProfile({ props }) {
           type="submit"
           onClick={submit}
         >
-          Submit
+          Valider
         </Button>
       </FormControl>
     </>

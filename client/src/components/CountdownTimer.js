@@ -31,12 +31,12 @@ function CountdownTimer({ targetDate }) {
   const { days, hours, minutes, seconds, difference } = timeLeft;
 
   if ((days === undefined) || (difference <= 0)) {
-    return "Countdown expired!"
+    return "L'enchere est fermer!"
   } else {
     return (
       <div>
-        <p>
-          Time Remaining: {days} days, {hours} hours, {minutes} minutes, {seconds} seconds
+        <p >
+        Le enchère sera fermée jusqu'à: {days}:{hours}:{minutes}:{seconds}
         </p>
       </div>
     )

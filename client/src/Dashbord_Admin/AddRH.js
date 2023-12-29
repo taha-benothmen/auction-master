@@ -18,9 +18,12 @@ import {
   Select,
   Alert,
   AlertIcon,
+  useToast
 } from '@chakra-ui/react';
 
 const Register = () => {
+  const toast = useToast();
+
   const history = useNavigate();
   const cookies = new Cookies();
   const token = cookies.get('TOKEN');
@@ -28,8 +31,8 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
-  const [school, setSchool] = useState('');
-  const [availableSchools, setAvailableSchools] = useState([]);
+  const [theme, setSchool] = useState('');
+  const [availableThemes, setAvailableThemes] = useState([]);
   const [valid, setValid] = useState(false);
 
 
@@ -40,12 +43,12 @@ const Register = () => {
   async function submit(e) {
     e.preventDefault();
 
-    console.log(school);
+    console.log(theme);
 
     if (
       !name ||
       !username ||
-      !school ||
+      !theme ||
       !password ||
       !confirmPassword
     ) {
@@ -55,7 +58,14 @@ const Register = () => {
     }
 
     if (password !== confirmPassword) {
-      alert('Password does not match!');
+    
+      toast({
+        title: 'Password does not match!',
+        description: "",
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      })
       return;
     }
 
@@ -65,7 +75,7 @@ const Register = () => {
           username: username.toLowerCase(),
           password,
           name,
-          school,
+          theme,
         })
         .then((res) => {
           console.log(res.data);
@@ -86,27 +96,27 @@ const Register = () => {
     }
   }
 
-  async function getSchoolsList() {
+  async function getThemesList() {
     try {
       await axios
-        .get('http://localhost:1234/schools')
+        .get('http://localhost:1234/themes')
         .then((res) => {
-          const modifiedData = res.data.map((school) => ({
-            ...school,
+          const modifiedData = res.data.map((theme) => ({
+            ...theme,
             id: uuidv4(),
           }));
           console.log(modifiedData);
           // Update the state with the modified data
-          setAvailableSchools(modifiedData);
+          setAvailableThemes(modifiedData);
         });
-      console.log(availableSchools);
+      console.log(availableThemes);
     } catch (e) {
       console.log(e);
     }
   }
 
   useEffect(() => {
-    getSchoolsList();
+    getThemesList();
   }, []);
 
   return (

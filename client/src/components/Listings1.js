@@ -31,7 +31,7 @@ const Listings = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [filterApplied, setFilterApplied] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState(null);
-  const [availableSchools, setAvailableSchools] = useState([]);
+  const [availableThemes, setAvailableThemes] = useState([]);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -48,7 +48,7 @@ const Listings = () => {
         setListings(res.data);
         console.log("🚀 ~ file: Listings.js:49 ~ .then ~ res.data:", res.data)
         setFilteredListings(res.data);
-        getSchoolsList();
+        getThemesList();
       })
       .catch((e) => {
         console.log('Error fetching listings data');
@@ -86,10 +86,10 @@ const Listings = () => {
     }
   };
 
-  async function getSchoolsList() {
+  async function getThemesList() {
     try {
       axios.get('http://localhost:1234/getAllThemes/').then((res) => {
-        setAvailableSchools(res.data);
+        setAvailableThemes(res.data);
 
       });
 
@@ -207,8 +207,8 @@ const Listings = () => {
           onChange={handleDropDown}
           variant="filled"
         >
-          {availableSchools.schools && availableSchools.schools.map((school) => {
-            return <option key={school.school_name} >{school.school_name}</option>;
+          {availableThemes.themes && availableThemes.themes.map((theme) => {
+            return <option key={theme.theme_name} >{theme.theme_name}</option>;
           })}
         </Select>
       </InputGroup>

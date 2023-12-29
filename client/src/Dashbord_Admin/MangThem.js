@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import Cookies from 'universal-cookie';
 import axios from 'axios';
+import { Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, useToast } from '@chakra-ui/react';
+
 import {
   Flex,
   Box,
@@ -53,12 +56,23 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
 
 import { Search2Icon, AddIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import bgg from '../assets/bgg.png'
+
+
+
 const Listings = () => {
+  const toast = useToast();
+
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [filterApplied, setFilterApplied] = useState(false);
-  const [schools, setSchools] = useState([]);
+  const [themes, setThemes] = useState([]);
   const [newSchoolName, setNewSchoolName] = useState('');
   const [theme, setTheme] = useState('');
+
+
+  const cookies = new Cookies();
+  const token = cookies.get('TOKEN');
+
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
@@ -70,15 +84,16 @@ const Listings = () => {
     setModalOpen(false);
   };
   useEffect(() => {
-    getSchoolsList();
+    getThemesList();
   }, []);
 
-  async function getSchoolsList() {
+  async function getThemesList() {
     try {
-      const response = await axios.get('http://localhost:1234/schools');
-      setSchools(response.data); // Assuming response.data is an array of objects with a 'name' property for each school
+      const response = await axios.get('http://localhost:1234/themes');
+      console.log("🚀 ~ file: MangThem.js:89 ~ getThemesList ~ response:", response)
+      setThemes(response.data);
     } catch (error) {
-      console.log('Error fetching schools:', error);
+      console.log('Error fetching themes:', error);
     }
   }
   const handleAddSchool = async (e) => {
@@ -90,52 +105,94 @@ const Listings = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ schoolName: newSchoolName }),
+        body: JSON.stringify({ themeName: newSchoolName }),
       });
 
       await response.json().then((res) => {
         console.log("🚀 ~ file: MangThem.js:84 ~ result ~ result:", res);
 
-        getSchoolsList();
+        getThemesList();
         setNewSchoolName('');
       });
 
 
     } catch (error) {
-      console.log('Error adding school:', error);
+      console.log('Error adding theme:', error);
     }
   };
-  const handleDeletetheme = async (newSchoolName) => {
-
+  const handleDeletetheme = async (themeName) => {
     try {
+      const response = await axios.get(`http://localhost:1234/checkThemeUsage?themeName=${themeName}`);
+
+      if (response.data.usedInListings) {
+        // Theme exists in listings, cannot delete
+        
+        toast({
+          title: 'Theme is used in listings, cannot delete.',
+          description: "We've deleted the theme successfully.",
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        })
+        return;
+      }
+
       await axios.delete('http://localhost:1234/deletetheme', {
-        data: { schoolName: newSchoolName }
-      }).then(() => {
-        getSchoolsList()
+        data: { themeName }
+      });
+      getThemesList(); // Update theme list after deletion
+      toast({
+        title: 'Theme deleted successfully.',
+        description: "We've deleted the theme successfully.",
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
       })
-      // Perform other actions after successful deletion
     } catch (error) {
       console.error('Error deleting theme:', error);
       // Handle error scenarios
+      toast({
+        title: 'Failed to delete theme.',
+        description: "",
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      })
     }
   };
-  const submitTheme = (oldSchool) => {
-  
+  const [newThemeName, setNewThemeName] = useState('');
+
+  const submitTheme = (themeName) => {
     const dataObject = {
-      newTheme: theme, 
-      oldTheme: oldSchool, 
+      oldTheme: themeName,
+      newTheme: newThemeName,
     };
-    console.log("🚀 ~ file: MangThem.js:129 ~ submitTheme ~ dataObject:", dataObject)
-    
-  
-    axios
-      .post(`http://localhost:1234/updateTheme`, dataObject)
+
+    axios.post(`http://localhost:1234/updateTheme`, dataObject)
       .then((res) => {
-        alert('Theme updated successfully!');
-        getSchoolsList();
+        toast({
+          title: 'Theme updated successfully!',
+          description: "",
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        })
+        getThemesList();
       })
-      .catch((e) => console.log(e));
+      .catch((error) => {
+        console.error('Error updating theme:', error);
+        
+        toast({
+          title: 'Failed to update theme.',
+          description: "",
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        })
+      });
   };
+
+
   return (
     <Flex flexDirection="column"
       bgImage={bgg}
@@ -155,9 +212,9 @@ const Listings = () => {
       >
 
         <SimpleGrid columns={3} spacing={5} >
-          {schools.map((school) => (
+          {themes.map((theme) => (
             <Box
-              key={school.id}
+              key={theme.id}
               boxShadow={'2xl'}
               rounded={'lg'}
               p={6}
@@ -166,7 +223,7 @@ const Listings = () => {
             >
 
               <Heading fontSize={'2xl'} fontFamily={'body'}>
-                {school.school_name}
+                {theme.theme_name}
               </Heading>
 
               <Stack mt={8} direction={'row'} spacing={2}>
@@ -184,7 +241,7 @@ const Listings = () => {
                   _focus={{
                     bg: '#d2f1eb',
                   }}
-                  onClick={() => handleDeletetheme(school.school_name)}
+                  onClick={() => handleDeletetheme(theme.theme_name)}
                 >
                   Supprimer
                 </Button>
@@ -222,28 +279,29 @@ const Listings = () => {
                               type="text"
                               min="0"
                               variant="filled"
-                              placeholder= {school.school_name}
-                              value={theme}
-                              onChange={(e) => setTheme(e.target.value)}
+                              placeholder={theme.theme_name}
+                              value={newThemeName}
+                              onChange={(e) => setNewThemeName(e.target.value)}
                             />
+
                           </InputGroup>
                         </FormControl>
                         <center>
-                        <Button 
-                        margin={3}
-                        flex={1}
-                        fontSize={'sm'}
-                        rounded={'full'}
-                        bg={'#d2f1eb'}
-                        color={'white'}
-                        boxShadow={'#d2f1eb'}
-                        _hover={{
-                          bg: '#fdcac6',
-                        }}
-                        _focus={{
-                          bg: '#d2f1eb',
-                        }}
-                        onClick={() => { submitTheme(school.school_name) }}>Modifier</Button></center>
+                          <Button
+                            margin={3}
+                            flex={1}
+                            fontSize={'sm'}
+                            rounded={'full'}
+                            bg={'#d2f1eb'}
+                            color={'white'}
+                            boxShadow={'#d2f1eb'}
+                            _hover={{
+                              bg: '#fdcac6',
+                            }}
+                            _focus={{
+                              bg: '#d2f1eb',
+                            }}
+                            onClick={() => { submitTheme(theme.theme_name) }}>Modifier</Button></center>
                       </PopoverBody>
                     </PopoverContent>
                   </Portal>

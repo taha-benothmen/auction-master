@@ -5,7 +5,7 @@ const registration_middleware = require('../middleware/registration_middleware')
 exports.get_user_info = async (username) => {
   try {
     const result = await db.query(
-      'SELECT school_name, description, IsAdmin FROM users WHERE username = ?',
+      'SELECT theme_name, description, IsAdmin FROM users WHERE username = ?',
       [username]
     );
     return result[0][0];

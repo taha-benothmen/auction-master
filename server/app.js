@@ -14,7 +14,7 @@ const usersRouter = require('./routes/users');
 const loginRouter = require('./routes/login');
 const registerRouter = require('./routes/register');
 const listingsRouter = require('./routes/listings');
-const schoolsRouter = require('./routes/schools');
+const themesRouter = require('./routes/themes');
 const housingRouter = require('./routes/housing');
 const commentsRouter = require('./routes/comments');
 const addressRouter = require('./routes/addresses');
@@ -57,7 +57,7 @@ app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/listings', listingsRouter);
 app.use('/images', express.static('./images'));
-app.use('/schools', schoolsRouter);
+app.use('/themes', themesRouter);
 app.use('/housinginfo', housingRouter);
 app.use('/comments', commentsRouter);
 app.use('/addresses', addressRouter);
@@ -85,7 +85,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'auction-db'
+  database: 'enchere_app-db'
 });
 
 connection.connect((err) => {
@@ -97,10 +97,10 @@ connection.connect((err) => {
 });
 
 app.post('/addThemeEndpoint', (req, res) => {
-  const { schoolName } = req.body;
+  const { themeName } = req.body;
 
-  const sql = 'INSERT INTO schools(school_name) VALUES(?)';
-  const values = schoolName;
+  const sql = 'INSERT INTO themes(theme_name) VALUES(?)';
+  const values = themeName;
 
   connection.query(sql, values, (err, results) => {
     if (err) {
@@ -112,29 +112,62 @@ app.post('/addThemeEndpoint', (req, res) => {
     res.json({ message: 'theme added successfully' });
   });
 });
+
+
 app.post('/updateTheme', (req, res) => {
   const { newTheme, oldTheme } = req.body;
 
-  const sql = 'UPDATE schools SET school_name = ? WHERE school_name = ?';
+  const sql = 'UPDATE themes SET theme_name = ? WHERE theme_name = ?';
+  const sql1 = 'UPDATE listings SET theme = ? WHERE theme = ?';
+
   const values = [newTheme, oldTheme];
 
   connection.query(sql, values, (err, results) => {
     if (err) {
-      console.error('Error executing query:', err);
+      console.error('Error executing theme update query:', err);
       res.status(500).json({ error: 'Error updating theme' });
       return;
     }
-    res.json({ message: 'theme updated successfully' });
+
+    connection.query(sql1, values, (err1, results1) => {
+      if (err1) {
+        console.error('Error executing listings update query:', err1);
+        res.status(500).json({ error: 'Error updating listings' });
+        return;
+      }
+
+      res.json({ message: 'Theme and listings updated successfully' });
+    });
   });
 });
 
+
+app.post('/updateCommonts', (req, res) => {
+  const { newComment, oldComentID } = req.body;
+
+  const sql = 'UPDATE comments SET content = ? WHERE cid = ?';
+  const values = [newComment, oldComentID];
+
+  connection.query(sql, values, (err, results) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Error updating comment' });
+      return;
+    }
+    res.json({ message: 'Comment updated successfully' });
+  });
+});
+
+
+
+
 app.delete('/deletetheme', (req, res) => {
-  const { schoolName } = req.body;
+  const { themeName } = req.body;
 
-  const sql = `DELETE FROM schools WHERE school_name = ?`;
-  const values = [schoolName];
+  const sql = `DELETE FROM themes WHERE theme_name = ?`;
+  const values = [themeName];
 
-  connection.query(sql, [schoolName], (err, results) => {
+  connection.query(sql, [themeName], (err, results) => {
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Error deleting theme' });
@@ -149,6 +182,25 @@ app.delete('/deletetheme', (req, res) => {
     res.json({ message: 'theme deleted successfully' });
   });
 });
+app.get('/checkThemeUsage', (req, res) => {
+  const { themeName } = req.query;
+
+  const checkThemeQuery = `SELECT COUNT(*) AS themeCount FROM listings WHERE theme = ?`;
+
+  connection.query(checkThemeQuery, [themeName], (err, results) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Error checking theme usage' });
+      return;
+    }
+
+    const themeCount = results[0].themeCount;
+
+    // Send a response indicating if the theme is used in listings
+    res.json({ usedInListings: themeCount > 0 });
+  });
+});
+
 
 app.get('/getAllRH', (req, res) => {
   const sql = "SELECT * FROM users WHERE IsRh = 1;"
@@ -222,10 +274,10 @@ app.get('/getAllUserData/:username', (req, res) => {
 });
 
 app.post('/updateListingPrice', (req, res) => {
-  const { listingId, newPrice } = req.body;
+  const { listingId, newPrice, winer } = req.body;
 
-  const sql = 'UPDATE listings SET price = ? WHERE lid = ?';
-  const values = [newPrice, listingId];
+  const sql = 'UPDATE listings SET price = ?, winer = ? WHERE lid = ?'; // Changed 'AND' to ','
+  const values = [newPrice, winer, listingId];
 
   connection.query(sql, values, (err, results) => {
     if (err) {
@@ -236,6 +288,7 @@ app.post('/updateListingPrice', (req, res) => {
     res.json({ message: 'Price updated successfully' });
   });
 });
+
 
 app.post('/updateRhUser', (req, res) => {
   const { newUsername, newPassword, newName, oldUsername } = req.body;
@@ -315,8 +368,35 @@ app.get('/getAllListings', (req, res) => {
   });
 });
 
-app.get('/getAllThemes', (req, res) => {
-  const sql = "SELECT * FROM schools"; // Query updated to retrieve data from the schools table
+app.get('/themes', (req, res) => {
+  const sql = `SELECT theme_name FROM themes`;
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Error executing query' });
+      return;
+    }
+    res.json(results);
+  });
+});
+app.get('/themesCount', (req, res) => {
+  const sql = `SELECT themes.theme_name, COUNT(listings.lid) AS num_listings
+  FROM themes
+  LEFT JOIN listings ON themes.theme_name = listings.theme
+  GROUP BY themes.theme_name;
+  `;
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Error getting themes count' });
+      return;
+    }
+    res.json(results);
+  });
+});
+
+app.get('/getAllUsers', (req, res) => {
+  const sql = "SELECT * FROM users "
 
   connection.query(sql, (err, results) => {
     if (err) {
@@ -325,7 +405,19 @@ app.get('/getAllThemes', (req, res) => {
       return;
     }
 
-    res.json({ schools: results }); // Send the query results as JSON response with key 'schools'
+    res.json({ users: results }); // Send the query results as JSON response
   });
 });
+app.get('/listingCount', (req, res) => {
+  const sql = "SELECT * FROM listings "
 
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Error executing query' });
+      return;
+    }
+
+    res.json({ listings: results }); // Send the query results as JSON response
+  });
+});

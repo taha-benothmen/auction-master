@@ -13,7 +13,7 @@ import Profile from './components/Profile';
 import HousingInfo from './components/HousingInfo';
 import MessageBoard from './components/MessageBoard';
 import SingleListing from './components/SingleListing';
-import Schools from './components/Schools';
+import Themes from './components/Themes';
 import { ChakraProvider } from '@chakra-ui/react';
 import SingleResidence from './components/SingleResidence';
 import Error from './components/Error';
@@ -58,21 +58,21 @@ function App() {
 
   let navbarComponent = null;
 
-  if (isHomeAdminPage || isAdminLog  || isAddRH  || isMangment || isThem) {
+  if (isHomeAdminPage || isAdminLog || isAddRH || isMangment || isThem) {
     navbarComponent = <NavbarDash />;
   } else if (isHomeRHPage || isRHLog || isUsers || isActions) {
     navbarComponent = <NavbarRH />;
   } else if (isVerif) {
     navbarComponent = <Navbar1 />;
-  } 
+  }
   else {
-    navbarComponent= <Navbar/>;
+    navbarComponent = <Navbar />;
   }
   return (
     <ChakraProvider>
       {navbarComponent}
 
-       <Routes>
+      <Routes>
         <Route path="/" element={<Login />} exact />
         <Route path="/veriflog" element={<Verfilog />} exact />
         <Route path="/register" element={<Register />} />
@@ -84,26 +84,26 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/messageboard" element={<MessageBoard />} />
-        <Route path="/schools" element={<Schools />} />
+        <Route path="/themes" element={<Themes />} />
         <Route path="/searchresidences" element={<SearchResidences />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/*" element={<Error />} />
-        <Route path='/adminlog' element={<Adminlog/>}></Route>
-        <Route path='/homeadmin' element={<Homeadmin/>}></Route>
-        <Route path='/rhlog' element={<RHlog/>}></Route>
-        <Route path='/homerh' element={<HomeRH/>}></Route>
-        <Route path='/addrh' element={<AddRH/>}></Route>
-        <Route path='/mangmentrh' element={<MangmentRH/>}></Route>
-        <Route path='/mangthem' element={<MangThem/>}></Route>
-        <Route path='/validateauctions' element={<ValidateAuctions/>}></Route>
-        <Route path='/validateusers' element={<ValidateUsers/>}></Route>
-        <Route path='/contact' element={<Contact/>}></Route>
+        <Route path='/adminlog' element={<Adminlog />}></Route>
+        <Route path='/homeadmin' element={<Homeadmin />}></Route>
+        <Route path='/rhlog' element={<RHlog />}></Route>
+        <Route path='/homerh' element={<HomeRH />}></Route>
+        <Route path='/addrh' element={<AddRH />}></Route>
+        <Route path='/mangmentrh' element={<MangmentRH />}></Route>
+        <Route path='/mangthem' element={<MangThem />}></Route>
+        <Route path='/validateauctions' element={<ValidateAuctions />}></Route>
+        <Route path='/validateusers' element={<ValidateUsers />}></Route>
+        <Route path='/contact' element={<Contact />}></Route>
 
 
       </Routes>
-    
+
     </ChakraProvider>
-    
+
   );
 }
 

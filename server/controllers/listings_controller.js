@@ -1,9 +1,9 @@
 const listings_middleware = require('../middleware/listings_middleware');
 const db = require('../mysql/mysql');
 
-exports.retrieve_school_listings = async (req, res) => {
+exports.retrieve_theme_listings = async (req, res) => {
   try {
-    const result = await listings_middleware.retrieve_school_listings(req);
+    const result = await listings_middleware.retrieve_theme_listings(req);
     res.status(200).send(result);
   } catch (e) {
     res.status(401).json({ message: 'Error Fetching Listings' });

@@ -1,30 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  Flex,
-  Box,
-  Heading,
-  Text,
-  Avatar,
-  Button,
-  Stack,
-  SimpleGrid
-} from '@chakra-ui/react';
+
+import { Flex, Box, Heading, Text, Avatar, Button, Stack, SimpleGrid, Center } from '@chakra-ui/react';
+
 import {
   Icon,
-  Image,
-  Badge,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
   Input,
   InputGroup,
   InputLeftElement,
-  Select,
-  Center,
-  Link,
+
   useColorModeValue,
-  HStack,
+
   useDisclosure,
   FormLabel,
-  Portal
+  Portal,
+  useToast
 } from '@chakra-ui/react';
 import Cookies from 'universal-cookie';
 import {
@@ -56,7 +53,8 @@ import bgg from '../assets/bgg.png'
 const Listings = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [filterApplied, setFilterApplied] = useState(false);
-  const [schools, setSchools] = useState([]);
+  const [themes, setThemes] = useState([]);
+  const toast = useToast();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
@@ -70,6 +68,11 @@ const Listings = () => {
   const [usernameRH, setUsernameRH] = useState('');
   const [emailRH, setEmailRH] = useState('');
   const [passwordRH, setPasswordRH] = useState('');
+
+  // confirmation for deletion uses
+  const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+  const cancelRef = React.useRef();
+  const [userToBeDeleted, setUserToBeDeleted] = useState('');
 
 
   useEffect(() => {
@@ -103,27 +106,42 @@ const Listings = () => {
     try {
       await axios.post('http://localhost:1234/addNewRhUser', dataObject).then(() => {
         fetchAdminUsers()
+
       })
 
     } catch (error) {
-      console.log('Error adding school:', error);
+      console.log('Error adding theme:', error);
     }
   };
 
   const handleDeleteUser = async (usernameToDelete) => {
-
     try {
-      await axios.delete('http://localhost:1234/deleteRhUser', {
+      const res = await axios.delete('http://localhost:1234/deleteRhUser', {
         data: { username: usernameToDelete }
-      }).then(() => {
-        fetchAdminUsers()
-      })
-      // Perform other actions after successful deletion
+      });
+
+      if (res.status === 200) {
+        toast({
+          title: 'Utilisateur supprimé avec succès !',
+          description: "",
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+        onCloseDelete()
+        fetchAdminUsers(); // Assuming this function fetches the updated user list
+
+      } else {
+        // Handle non-200 status codes if necessary
+        onCloseDelete()
+      }
     } catch (error) {
       console.error('Error deleting user:', error);
       // Handle error scenarios
+      onCloseDelete()
     }
   };
+
   const UpdateRH = (user) => {
 
     const dataObject = {
@@ -137,7 +155,14 @@ const Listings = () => {
     axios
       .post(`http://localhost:1234/updateRhUser`, dataObject)
       .then((res) => {
-        alert('RH updated successfully!');
+
+        toast({
+          title: 'Mise à jour effectuée avec succès !',
+          description: "",
+          status: 'succes',
+          duration: 9000,
+          isClosable: true,
+        })
         fetchAdminUsers();
       })
       .catch((e) => console.log(e));
@@ -208,12 +233,12 @@ const Listings = () => {
                       }}
                       _focus={{
                         bg: '#d2f1eb',
-                      }}>Editer</Button>
+                      }}>Modifier</Button>
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent>
                       <PopoverArrow />
-                      <PopoverHeader>Modifier le compte</PopoverHeader>
+                      <PopoverHeader>Modifier les données du compte </PopoverHeader>
                       <PopoverCloseButton />
                       <PopoverBody>
                         <FormLabel>Nom</FormLabel>
@@ -291,24 +316,42 @@ const Listings = () => {
                     </PopoverContent>
                   </Portal>
                 </Popover>
-                <Button
-                  flex={1}
-                  fontSize={'sm'}
-                  rounded={'full'}
-                  bg={'#fdcac6'}
-                  color={'white'}
-                  boxShadow={
-                    '#d2f1eb'
-                  }
-                  _hover={{
-                    bg: '#fdcac6',
+
+                <Button rounded='full' fontSize={'sm'}
+                  colorScheme='red'
+                  onClick={() => {
+                    setUserToBeDeleted(user.username);
+                    onOpenDelete();
                   }}
-                  _focus={{
-                    bg: '#d2f1eb',
-                  }}
-                  onClick={() => handleDeleteUser(user.username)}>
-                  Supprimer
+                >Supprimer
                 </Button>
+
+                <AlertDialog
+                  motionPreset='slideInBottom'
+                  leastDestructiveRef={cancelRef}
+                  onClose={onCloseDelete}
+                  isOpen={isOpenDelete}
+                  isCentered
+                >
+                  <AlertDialogOverlay />
+
+                  <AlertDialogContent>
+                    <AlertDialogHeader>Delete user {userToBeDeleted}?</AlertDialogHeader>
+                    <AlertDialogCloseButton />
+                    <AlertDialogBody>
+                      Are you sure you wan tto delete user {userToBeDeleted} permanently ?
+                    </AlertDialogBody>
+                    <AlertDialogFooter>
+                      <Button ref={cancelRef} onClick={onCloseDelete}>
+                        No
+                      </Button>
+                      <Button colorScheme='red' ml={3}
+                        onClick={() => handleDeleteUser(userToBeDeleted)}>
+                        Yes
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </Stack>
             </Box>
 
@@ -347,10 +390,10 @@ const Listings = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader> Ajouter responsable RH</DrawerHeader>
+          <DrawerHeader> Ajouter un responsable RH</DrawerHeader>
 
           <DrawerBody>
-            <FormLabel htmlFor="newSchool">Ajouter un RH responsable</FormLabel>
+            <FormLabel htmlFor="newSchool"></FormLabel>
 
             <SimpleGrid columns={1} spacing={5}>
               <FormControl isRequired flexBasis="30%">
@@ -403,11 +446,12 @@ const Listings = () => {
               _hover={{
                 bg: '#F4B4B2',
               }}
-            >Ajouter RH</Button>
+            >Ajouter</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </Flex>
+
   );
 };
 

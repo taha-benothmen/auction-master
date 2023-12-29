@@ -73,21 +73,21 @@ const Login = () => {
           });
         })
 
-      axios.post(
-        'http://localhost:1234/notifications',
-        {
-          title: 'Welcome to the app!',
-          username: data.username,
-          content: `Welcome back ${data.username}`,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${data.token}`,
-          },
-        }
-      );
+      // axios.post(
+      //   'http://localhost:1234/notifications',
+      //   {
+      //     title: 'Welcome to the app!',
+      //     username: data.username,
+      //     content: `Welcome back ${data.username}`,
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${data.token}`,
+      //     },
+      //   }
+      // );
 
-      
+
       history('/home', { email: data.username });
     } catch (e) {
       console.log(e);

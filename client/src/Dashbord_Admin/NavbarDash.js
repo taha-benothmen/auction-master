@@ -60,7 +60,7 @@ const Profile = () => {
   const logoutModal = useDisclosure();
   const deleteModal = useDisclosure();
   const [description, setDescription] = useState('');
-  const [school, setSchool] = useState('');
+  const [theme, setSchool] = useState('');
 
   const history = useNavigate();
   const cookies = new Cookies();
@@ -79,7 +79,7 @@ const Profile = () => {
           })
           .then((res) => {
             setDescription(res.data.description);
-            setSchool(res.data.school_name);
+            setSchool(res.data.theme_name);
           })
           .catch((e) => {
             console.log(e);
@@ -142,17 +142,21 @@ const Profile = () => {
 
         {token && (
           <div>
+            
             <HStack spacing="20px" pt="20px">
+              
             <Link to="/mangmentrh">
               <Button bg="white">Gestion des responsables RH</Button>
             </Link>
-         
+          
            
 
             <Link to="/mangthem">
               <Button bg="white">Gestion des thèmes</Button>
             </Link>
-
+            <Link to="/homeadmin">
+              <Button bg="white">Dashbord</Button>
+            </Link>
 
             </HStack>
           </div>

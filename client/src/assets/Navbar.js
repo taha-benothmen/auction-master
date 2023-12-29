@@ -46,8 +46,8 @@ export default function Navbar() {
               <Button bg="white">Housing</Button>
             </Link>
 
-            <Link to="/schools">
-              <Button bg="white"> Schools</Button>
+            <Link to="/themes">
+              <Button bg="white"> Themes</Button>
             </Link>
 
             <Link to="/searchresidences">

@@ -93,10 +93,10 @@ check_address_main = async (req) => {
 
 get_previous_address = async (req) => {
   const query =
-    'SELECT street_address, postal_code, country FROM residences WHERE res_name = ? AND school_name = ?';
+    'SELECT street_address, postal_code, country FROM residences WHERE res_name = ? AND theme_name = ?';
   const [result] = await db.query(query, [
     req.params.residence,
-    req.user.school,
+    req.user.theme,
   ]);
   return result[0];
 };

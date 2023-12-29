@@ -1,4 +1,5 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import {
   HStack,
   VStack,
@@ -6,51 +7,102 @@ import {
   useColorModeValue,
   Flex,
   Link,
+  ListItem,
   Icon,
   SimpleGrid,
   Container,
-  Stack
+  Stack,
+  UnorderedList,
+  Box,
+  Heading
 } from '@chakra-ui/react';
-// Here we have used framer-motion package for animations
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+
 import { motion } from 'framer-motion';
-// Here we have used react-icons package for the icons
 import { HiOutlineMail } from 'react-icons/hi';
 import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs';
 import { AiOutlineLike, AiOutlineEye } from 'react-icons/ai';
+import { FaUsers } from "react-icons/fa6";
+import { BiSolidCategoryAlt } from "react-icons/bi";
+import { CiShoppingTag } from "react-icons/ci";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
-interface StatData {
-  id: number;
-  label: string;
-  score: number;
-  icon: any;
-  percentage: string;
-}
 
-const statData: StatData[] = [
-  {
-    id: 1,
-    label: 'Total post reactions',
-    score: 1730,
-    icon: AiOutlineLike,
-    percentage: '10%'
-  },
-  {
-    id: 2,
-    label: 'Total post views',
-    score: 3245,
-    icon: AiOutlineEye,
-    percentage: '30%'
-  },
-  {
-    id: 3,
-    label: 'Total messages',
-    score: 100,
-    icon: HiOutlineMail,
-    percentage: '30%'
-  }
-];
 
 const StatsWithIcons = () => {
+  const [users, setUsers] = useState([]);
+  const [themes, setThemes] = useState([]);
+  const [listings, setListings] = useState([]);
+  const [listingsCount, setlistingsCount] = useState(); // New state to store themes count
+
+  const data = themes.map((theme) => ({
+    name: theme.theme_name,
+    value: theme.num_listings,
+  }));
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF']; // Add more colors as needed
+
+  let statData = [
+    {
+      id: 1,
+      label: "Nombre d'utilisateurs total",
+      score: users.length ? users.length : 'zero',
+      icon: FaUsers,
+
+    },
+    {
+      id: 2,
+      label: "Nombre de thèmes total",
+      score: themes.length ? themes.length : 'zero',
+      icon: BiSolidCategoryAlt,
+
+    },
+    {
+      id: 3,
+      label: "Nombre d'articles total",
+      score: listings.length ? listings.length : 'zero',
+      icon: CiShoppingTag,
+
+    }
+  ];
+
+  const fetchUserList = async () => {
+    try {
+      const response = await axios.get('http://localhost:1234/getAllUsers');
+
+      setUsers(response.data.users);
+    } catch (error) {
+      console.error('Error fetching users list:', error);
+    }
+  };
+  const fetchListingsList = async () => {
+    try {
+      const response = await axios.get('http://localhost:1234/listingCount');
+      setListings(response.data.listings);
+    } catch (error) {
+      console.error('Error fetching listings list:', error);
+    }
+  };
+
+
+  const fetchThemesList = async () => {
+    try {
+      const response = await axios.get('http://localhost:1234/themesCount');
+      setThemes(response.data);
+    } catch (error) {
+      console.error('Error fetching themes list:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserList();
+    fetchThemesList();
+    fetchListingsList();
+
+  }, []);
+
+
+
   return (
     <Container maxW="7xl" p={{ base: 5, md: 10 }}>
       <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={5} mt={6} mb={4}>
@@ -58,11 +110,75 @@ const StatsWithIcons = () => {
           <Card key={index} data={data} />
         ))}
       </SimpleGrid>
+      <Text fontWeight="bold" color="black" margin={5}> Statistiques par thème :</Text>
+
+      {themes.map((theme) => (
+        <Box
+          key={theme.id}
+          borderWidth="1px"
+          borderRadius="lg"
+          overflow="hidden"
+          boxShadow="lg"
+       
+          p={4}
+          mb={4}
+        >
+          <Text fontWeight="bold" color="blue.500">
+            {theme.theme_name}
+          </Text>
+          <Text>Nombre d'enchère : {theme.num_listings}</Text>
+        </Box>
+      ))}
+            <Text fontWeight="bold" color="black" margin={5}> Diagrame de cas :</Text>
+
+      <Flex
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="hidden"
+        boxShadow="lg"
+        p={4}
+        mb={4}
+        bgColor={'gray.100'}>
+        <ResponsiveContainer width="100%" height={400}
+        >
+          <PieChart
+          >
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius={80}
+              fill="#8884d8"
+              label
+              width="100%"
+
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+
+        <ResponsiveContainer width="150%" height={400}>
+          <BarChart data={statData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="label" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="score" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
+      </Flex>
     </Container>
   );
 };
 
-const Card = ({ data }: { data: StatData }) => {
+
+const Card = ({ data }) => {
   return (
     <motion.div whileHover={{ translateY: -5 }}>
       <Stack
@@ -104,11 +220,7 @@ const Card = ({ data }: { data: StatData }) => {
                 {data.score}
               </Text>
               <Flex>
-                {Number(data.score) > 100 ? (
-                  <Icon as={BsArrowUpShort} w={6} h={6} color="green.400" />
-                ) : (
-                  <Icon as={BsArrowDownShort} w={6} h={6} color="red.400" />
-                )}
+                
                 <Text as="h2" fontSize="md">
                   {data.percentage}
                 </Text>
@@ -116,9 +228,7 @@ const Card = ({ data }: { data: StatData }) => {
             </HStack>
           </VStack>
         </HStack>
-        <Flex py={3} px={5} d="none" _groupHover={{ d: 'flex' }}>
-          <Link fontSize="md">View All</Link>
-        </Flex>
+       
       </Stack>
     </motion.div>
   );

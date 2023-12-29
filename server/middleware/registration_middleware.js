@@ -8,10 +8,10 @@ exports.isValidUsername = async (username) => {
   return isAvailableUser;
 };
 exports.addNewUser = async (username, password, name) => {
-  const school = 'Voitures';
-  const insertUserQuery = 'INSERT INTO users(username, password, name, school_name) VALUES (?, ?, ?, ?)';
+  const theme = 'Voitures';
+  const insertUserQuery = 'INSERT INTO users(username, password, name, theme_name) VALUES (?, ?, ?, ?)';
   try {
-    await db.query(insertUserQuery, [username, password, name, school]);
+    await db.query(insertUserQuery, [username, password, name, theme]);
   } catch (error) {
     throw error;
   }

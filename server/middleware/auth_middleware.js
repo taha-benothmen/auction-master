@@ -37,7 +37,7 @@ exports.verifyAdmin = async (username, password) => {
       const passQuery = 'SELECT password FROM admin WHERE username = ?';
       const [passRes] = await db.query(passQuery, [username]);
       const truePassword = passRes[0].password.toString('utf8');
-console.log(truePassword)
+      console.log(truePassword)
       if (password == truePassword) {
         return true;
       }
@@ -51,33 +51,33 @@ console.log(truePassword)
 
 exports.isAuthenticated = async (req, res, next) => {
   try {
-    //   get the token from the authorization header
+    //get the token from the authorization header
     const token = await req.headers.authorization.split(' ')[1];
 
     //check if the token matches the supposed origin
     const user = await jwt.verify(token, 'RANDOM-TOKEN');
 
     // pass the user down to the endpoints here
-    const school = await getUserSchool(user.username);
+    const theme = await getUserTheme(user.username);
 
     const name = await getUserName(user.username);
 
-    req.user = { username: user.username, school, name };
+    req.user = { username: user.username, name, theme: theme };
 
     // pass down functionality to the endpoint
     next();
   } catch (error) {
     console.log('failed to pass auth');
     res.status(401).json({
-      error: new Error('Invalid request!'),
+      error: new Error('Invalid request auth !'),
     });
   }
 };
 
-const getUserSchool = async (username) => {
-  const query = `SELECT school_name FROM users WHERE username="${username}"`;
-  const schoolResult = await db.query(query);
-  return schoolResult[0][0].school_name;
+const getUserTheme = async (username) => {
+  const query = `SELECT theme_name FROM users WHERE username="${username}"`;
+  const themeResult = await db.query(query);
+  return themeResult[0][0].theme_name;
 };
 
 const getUserName = async (username) => {

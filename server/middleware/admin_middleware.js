@@ -15,7 +15,7 @@ exports.adminGet = async (req) => {
   } else if (table === 'users') {
     const query = `SELECT DISTINCT ${attributeList} FROM users
     WHERE username LIKE '%${req.body.username}%'
-    AND school_name LIKE '%${req.body.school}%'
+    AND theme_name LIKE '%${req.body.theme}%'
     AND name LIKE '%${req.body.name}%'
     AND description LIKE '%${req.body.description}%'`;
     const result = await db.query(query);
@@ -23,7 +23,7 @@ exports.adminGet = async (req) => {
   } else if (table === 'residences') {
     const query = `SELECT DISTINCT ${attributeList} FROM residences 
     WHERE res_name LIKE '%${req.body.resName}%' AND
-    school_name LIKE '%${req.body.schoolName}%' AND 
+    theme_name LIKE '%${req.body.themeName}%' AND 
     street_address LIKE '%${req.body.streetAddress}%' AND 
     postal_code LIKE '%${req.body.postalCode}%' AND
     country LIKE '%${req.body.country}%'`;

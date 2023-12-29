@@ -24,7 +24,8 @@ import {
   HStack,
   useDisclosure,
   FormLabel,
-  Portal
+  Portal,
+  useToast
 } from '@chakra-ui/react';
 import Cookies from 'universal-cookie';
 import {
@@ -54,9 +55,11 @@ import { PinInput, PinInputField } from '@chakra-ui/react'
 import { Search2Icon, AddIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import bgg from '../assets/bgg.png'
 const ValidateCollab = () => {
+  const toast = useToast();
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [filterApplied, setFilterApplied] = useState(false);
-  const [schools, setSchools] = useState([]);
+  const [themes, setThemes] = useState([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
@@ -100,7 +103,13 @@ const ValidateCollab = () => {
     axios
       .post(`http://localhost:1234/updateVerifiedStatus`, dataObject)
       .then((res) => {
-        alert('User verified successfully!');
+        toast({
+          title: 'User verified successfully!.',
+          description: "",
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        })
         fetchAdminUsers();
       })
       .catch((e) => console.log(e));
@@ -115,7 +124,13 @@ const ValidateCollab = () => {
     axios
       .post(`http://localhost:1234/updateVerifiedStatus`, dataObject)
       .then((res) => {
-        alert('User unverified successfully!');
+        toast({
+          title: 'User unverified successfully!',
+          description: "",
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        })
         fetchAdminUsers();
       })
       .catch((e) => console.log(e));
@@ -186,7 +201,7 @@ const ValidateCollab = () => {
                     bg: '#d2f1eb',
                   }}
                   onClick={() => unverifyUser(user.username)}>
-                  Annuler la vérification
+                  Supprimer
                 </Button>}
                 {/* user not verified case  */}
 
@@ -206,7 +221,7 @@ const ValidateCollab = () => {
                     bg: '#d2f1eb',
                   }}
                   onClick={() => verifyUser(user.username)}>
-                  Vérifier
+                  Valider inscription
                 </Button>}
 
               </Stack>

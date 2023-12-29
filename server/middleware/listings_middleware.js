@@ -2,19 +2,20 @@ const db = require('../mysql/mysql');
 const fs = require('fs');
 const path = require('path');
 
-exports.retrieve_school_listings = async (req) => {
-  const school = req.query.school ? req.query.school : req.user.school;
-  const joinSearchQuery = `SELECT l1.lid, l1.name, l1.price, l1.image, 
+exports.retrieve_theme_listings = async (req) => {
+  const theme = req.query.theme ? req.query.theme : req.user.theme;
+  const joinSearchQuery = `SELECT l1.lid, l1.name, l1.price, l1.price_deb, l1.image, 
                             CASE 
                               WHEN EXISTS (SELECT * FROM sublets WHERE lid = l1.lid) THEN 'sublet'
                               ELSE 'item'
                             END AS type 
                             FROM listings l1
                             INNER JOIN users ON l1.username = users.username 
-                            WHERE school_name = ?`;
-  const [res] = await db.query(joinSearchQuery, school);
+                            WHERE theme_name = ?`;
+  const [res] = await db.query(joinSearchQuery, theme);
   return res;
 };
+
 
 exports.get_single_listing = async (req) => {
   const type = await get_listing_type(req.params.id);
@@ -35,12 +36,13 @@ exports.get_single_listing = async (req) => {
 
 
 exports.add_new_listing = async (req) => {
-  const listings_query = `INSERT INTO listings (name, username, price, description, image, theme, end_date)
-                           VALUES (?, ?, ?, ?, ?, ?,?)`;
+  const listings_query = `INSERT INTO listings (name, username, price, price_deb, description, image, theme, end_date)
+                           VALUES (?, ?, ?, ?, ?,?, ?,?)`;
   await db.query(listings_query, [
     req.body.name,
     req.user.username,
     req.body.price,
+    req.body.price_deb,
     req.body.description,
     req.file.filename,
     req.body.category, // Include the category in the query
@@ -49,11 +51,11 @@ exports.add_new_listing = async (req) => {
 
   if (req.body.type === 'sublet') {
     const type_query =
-      'INSERT INTO sublets(lid, type, res_name, school_name) VALUES(LAST_INSERT_ID(), ?, ?, ?)';
+      'INSERT INTO sublets(lid, type, res_name, theme_name) VALUES(LAST_INSERT_ID(), ?, ?, ?)';
     await db.query(type_query, [
       req.body.unitType,
       req.body.residence,
-      req.user.school,
+      req.user.theme,
     ]);
   } else {
     const type_query =

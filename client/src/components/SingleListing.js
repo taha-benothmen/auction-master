@@ -160,16 +160,19 @@ export default function SingleListing() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
-      .then((res) => {
-        toast({
-          title: 'Enchère supprimée avec succès !',
-          description: "",
-          status: 'succes',
-          duration: 9000,
-          isClosable: true,
-        })
-        history('/listings');
+      }).then((res) => {
+        if (res.status === 200) {
+          toast({
+            title: 'Poste supprimé avec succès !',
+            description: "",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          });
+          history('/listings');
+        } else {
+          // Handle non-200 status codes if necessary
+        }
       })
       .catch((e) => {
         alert(e.message);
@@ -416,13 +419,13 @@ export default function SingleListing() {
 
                   {countdownExpired ? (
                     <Box
-                    backgroundColor={'#fdcac6'}
-                    w='80%' p={3}
-                    borderRadius={5}>
-                    <p><Heading color={'red'} size={'1x'} marginBlockEnd={4} backgroundColor={'#fdcac6'}
-                      borderRadius={5}>L'enchère est fermée !</Heading></p>
-                  </Box>
-                   
+                      backgroundColor={'#fdcac6'}
+                      w='80%' p={3}
+                      borderRadius={5}>
+                      <p><Heading color={'red'} size={'1x'} marginBlockEnd={4} backgroundColor={'#fdcac6'}
+                        borderRadius={5}>L'enchère est fermée !</Heading></p>
+                    </Box>
+
                   ) : (
                     <Box
                       backgroundColor={'#fdcac6'}
@@ -473,37 +476,37 @@ export default function SingleListing() {
             </Box>
             {countdownExpired ? (<Center>
               <Flex margin={4}>
-                    <SimpleGrid>
-                      <Box>
-                        <Flex>
-                          <FaCircleArrowUp
-                            size="25px"
-                            color='green'
-                          />
-                          <Heading size="x1" mb="2" marginLeft={2}>
-                            Montant établi{' '}
-                            <Text as="span" color="green.500" fontStyle={'bold'}>
-                              {listing.price} TND
-                            </Text>{' '}
+                <SimpleGrid>
+                  <Box>
+                    <Flex>
+                      <FaCircleArrowUp
+                        size="25px"
+                        color='green'
+                      />
+                      <Heading size="x1" mb="2" marginLeft={2}>
+                        Montant établi{' '}
+                        <Text as="span" color="green.500" fontStyle={'bold'}>
+                          {listing.price} TND
+                        </Text>{' '}
 
-                          </Heading>
-                        </Flex>
-                      </Box>
-                      <Box>
-                        <Flex>
-                          <GiTrophyCup
-                            size="25px"
-                            color='gold' />
-                          <Heading size="x1" mb="2" marginLeft={2}>
+                      </Heading>
+                    </Flex>
+                  </Box>
+                  <Box>
+                    <Flex>
+                      <GiTrophyCup
+                        size="25px"
+                        color='gold' />
+                      <Heading size="x1" mb="2" marginLeft={2}>
 
-                            <Text as="span" color="pink.300">
-                              {listing.winer}
-                            </Text>
-                          </Heading>
-                        </Flex>
-                      </Box>
-                      </SimpleGrid>
-                      </Flex>
+                        <Text as="span" color="pink.300">
+                          {listing.winer}
+                        </Text>
+                      </Heading>
+                    </Flex>
+                  </Box>
+                </SimpleGrid>
+              </Flex>
               <Heading color={'red'} size={'Mx'} marginBlockEnd={4}></Heading></Center>) : (
               <>
                 <Flex mt="auto" >
@@ -538,34 +541,34 @@ export default function SingleListing() {
                         </Flex>
                       </Box>
                       <Box marginLeft={30} marginBlockStart={1}>
-                       <Flex justify="center">
+                        <Flex justify="center">
 
-                      <InputGroup  >
+                          <InputGroup  >
 
-                        <HStack >
-                          <Button {...inc} onClick={() => setBidPrice(({ prev }) => prev + 1)}>
-                            +
-                          </Button>
-                          <Input
-                            {...input}
-                            defaultValue={listing.price}
-                            value={bidPrice}
-                            onChange={(e) => setBidPrice(e.target.value)}
-                          />
-                        </HStack>
-                        <InputRightElement width="4rem" marginRight={-2}>
-                          <ImHammer2
-                            color="gray.400"
-                            cursor="pointer"
-                            transition="color 0.2s ease"
-                            _hover={{ color: '#F2B0AE' }}
-                            onClick={submitBidPrice}
+                            <HStack >
+                              <Button {...inc} onClick={() => setBidPrice(({ prev }) => prev + 1)}>
+                                +
+                              </Button>
+                              <Input
+                                {...input}
+                                defaultValue={listing.price}
+                                value={bidPrice}
+                                onChange={(e) => setBidPrice(e.target.value)}
+                              />
+                            </HStack>
+                            <InputRightElement width="4rem" marginRight={-2}>
+                              <ImHammer2
+                                color="gray.400"
+                                cursor="pointer"
+                                transition="color 0.2s ease"
+                                _hover={{ color: '#F2B0AE' }}
+                                onClick={submitBidPrice}
 
-                          />
-                        </InputRightElement>
+                              />
+                            </InputRightElement>
 
-                      </InputGroup>
-                      </Flex>
+                          </InputGroup>
+                        </Flex>
                       </Box>
                     </SimpleGrid>
 
@@ -685,9 +688,9 @@ export default function SingleListing() {
               );
             })}
           </Box>
-          <Box  p="15px"  my="20px" w={'40%'}>
+          <Box p="15px" my="20px" w={'40%'}>
             <InputGroup margin={1}
-             >
+            >
 
               <Input
                 placeholder="Lancer votre commontaire"
@@ -699,7 +702,7 @@ export default function SingleListing() {
                 borderColor='#F2B0AE'
                 focusBorderColor='#F2B0AE'
                 pr="4rem"
-                
+
 
 
               />
